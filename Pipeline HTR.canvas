@@ -1,0 +1,103 @@
+{
+	"nodes":[
+		{"id":"3850381be80c1617","type":"group","x":120,"y":800,"width":500,"height":820,"color":"5","label":"Branche Texte"},
+		{
+			"id":"entree",
+			"type":"text",
+			"text":"# ENTRÉE\n**Scan TIFF haute résolution (300–400 DPI)**",
+			"styleAttributes":{"textAlign":"center"},
+			"x":455,
+			"y":-40,
+			"width":320,
+			"height":90,
+			"color":"1"
+		},
+		{
+			"id":"etape1",
+			"type":"text",
+			"text":"# ÉTAPE 1 : PRÉTRAITEMENT\n• **Correction d'orientation** (deskewing)\n• **Normalisation du contraste** (CLAHE)\n• **Binarisation** adaptative (Sauvola)\n• **Réduction du bruit**\n>Outils : OpenCV, scikit-image, Pillow",
+			"styleAttributes":{"textAlign":"center"},
+			"x":410,
+			"y":100,
+			"width":410,
+			"height":220,
+			"color":"2"
+		},
+		{
+			"id":"etape2",
+			"type":"text",
+			"text":"# ÉTAPE 2 : SEGMENTATION DE LAYOUT\n• **Détection des régions** : texte / image / marge\n• **Classification** de chaque région\n> Outils : SAM (Segment Anything Model)",
+			"styleAttributes":{"textAlign":"center"},
+			"x":410,
+			"y":420,
+			"width":410,
+			"height":183,
+			"color":"3"
+		},
+		{
+			"id":"etape3",
+			"type":"text",
+			"text":"# ÉTAPE 3 : SEGMENTATION DE LIGNES\n• **Détection des lignes** de base (baseline)\n• **Découpe des images** de lignes\n> Outils : Kraken, DINO",
+			"styleAttributes":{"textAlign":"center"},
+			"x":140,
+			"y":810,
+			"width":460,
+			"height":170,
+			"color":"4"
+		},
+		{
+			"id":"etape3b",
+			"type":"text",
+			"text":"# ÉTAPE 3b : DESCRIPTION\n• **Description automatique** des enluminures et dessins\n\n>Outils : CLIP, LLaVA",
+			"styleAttributes":{"textAlign":"center"},
+			"x":760,
+			"y":810,
+			"width":440,
+			"height":163,
+			"color":"4"
+		},
+		{"id":"sortie","type":"text","text":"# SORTIE\nDataset structuré → Input du module NLP","x":740,"y":1740,"width":420,"height":80,"color":"11"},
+		{"id":"etape4","type":"text","text":"# ÉTAPE 4 : HTR PAR LIGNE\n• Reconnaissance du texte dans chaque image de ligne\n• Score de confiance par caractère\nOutils : TrOCR (fine‑tuné), Kraken","x":160,"y":1040,"width":420,"height":130,"color":"8"},
+		{"id":"etape5","type":"text","text":"# ÉTAPE 5 : AGRÉGATION ET CONSENSUS\n• Vote pondéré entre plusieurs modèles\n• Calcul du score de confiance global par ligne\n• Détection des lignes nécessitant une révision","x":160,"y":1240,"width":420,"height":160,"color":"9"},
+		{"id":"etape6","type":"text","text":"# ÉTAPE 6 : EXPORT STRUCTURÉ\n• Format JSON (pour le module NLP)\n• Format TEI XML (optionnel, pour les humanités)\n• Métriques : CER estimé, lignes à réviser","x":160,"y":1440,"width":420,"height":140,"color":"10"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"entree","fromSide":"bottom","toNode":"etape1","toSide":"top","color":"1"},
+		{"id":"e2","fromNode":"etape1","fromSide":"bottom","toNode":"etape2","toSide":"top","color":"2"},
+		{"id":"e6","fromNode":"etape3","fromSide":"bottom","toNode":"etape4","toSide":"top","color":"4"},
+		{"id":"e7","fromNode":"etape4","fromSide":"bottom","toNode":"etape5","toSide":"top"},
+		{"id":"e8","fromNode":"etape5","fromSide":"bottom","toNode":"etape6","toSide":"top"},
+		{"id":"e9","fromNode":"etape6","fromSide":"bottom","toNode":"sortie","toSide":"top"},
+		{
+			"id":"ec1cfaef51706e1b",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"etape2",
+			"fromSide":"bottom",
+			"toNode":"etape3",
+			"toSide":"top"
+		},
+		{
+			"id":"97a1389e96aa70f9",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"etape2",
+			"fromSide":"bottom",
+			"toNode":"etape3b",
+			"toSide":"top"
+		},
+		{
+			"id":"b88100389c03b9f8",
+			"styleAttributes":{},
+			"toFloating":false,
+			"fromNode":"etape3b",
+			"fromSide":"bottom",
+			"toNode":"sortie",
+			"toSide":"top"
+		}
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{"updated":"2026-05-15T01:05:55.927+02:00","edited_seconds":45}
+	}
+}

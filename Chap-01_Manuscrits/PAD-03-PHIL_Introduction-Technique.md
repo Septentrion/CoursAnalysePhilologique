@@ -1,4 +1,4 @@
-# Cours 1.4 — Introduction technique : de l'image numérique au problème de vision par ordinateur
+# Cours 1.4 : Introduction technique : de l'image numérique au problème de vision par ordinateur
 
 **Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
 
@@ -12,7 +12,7 @@
 
 Les trois sections précédentes ont établi la nature du problème depuis le côté humain : qu'est-ce qu'un manuscrit, quelles décisions sa lecture impose, comment mesurer la qualité d'une transcription. Cette section opère le basculement du côté machine.
 
-Elle est volontairement condensée — trente minutes en cours, un document de référence à relire à tête reposée. Elle n'entre pas dans les détails de chaque outil ou de chaque algorithme : c'est l'objet des Jours 2 à 5. Elle pose les fondements conceptuels sans lesquels les sessions suivantes manqueraient d'ancrage, et dessine la carte du territoire que nous allons explorer.
+Elle est volontairement condensée : trente minutes en cours, un document de référence à relire à tête reposée. Elle n'entre pas dans les détails de chaque outil ou de chaque algorithme : c'est l'objet des Jours 2 à 5. Elle pose les fondements conceptuels sans lesquels les sessions suivantes manqueraient d'ancrage, et dessine la carte du territoire que nous allons explorer.
 
 À l'issue de cette section, vous devrez être capables de répondre à ces trois questions simples :
 - Qu'est-ce qu'une image numérique, concrètement ?
@@ -57,7 +57,7 @@ region_ligne = tableau[200:250, :]   # Toute la largeur, lignes 200 à 249
 print(f"Dimensions de la région extraite : {region_ligne.shape}")
 ```
 
-> **Convention d'indexation :** en NumPy, les tableaux d'images sont indexés `[ligne, colonne]`, ce qui correspond à `[y, x]` dans le repère image (l'axe y pointe vers le bas). Cette convention — différente du repère mathématique habituel où y pointe vers le haut — est une source fréquente d'erreurs. À retenir une fois pour toutes.
+> **Convention d'indexation :** en NumPy, les tableaux d'images sont indexés `[ligne, colonne]`, ce qui correspond à `[y, x]` dans le repère image (l'axe y pointe vers le bas). Cette convention : différente du repère mathématique habituel où y pointe vers le haut : est une source fréquente d'erreurs. À retenir une fois pour toutes.
 
 ### 1.2 La résolution et les DPI
 
@@ -116,7 +116,7 @@ Pour les manuscrits, le canal rouge est souvent le plus informatif pour le texte
 
 **La conversion en niveaux de gris**
 
-Pour l'HTR, travailler en niveaux de gris simplifie le traitement sans perte d'information critique. La conversion depuis RGB vers niveaux de gris n'est pas une simple moyenne des trois canaux — elle utilise une pondération qui reflète la sensibilité perceptuelle de l'œil humain aux différentes longueurs d'onde :
+Pour l'HTR, travailler en niveaux de gris simplifie le traitement sans perte d'information critique. La conversion depuis RGB vers niveaux de gris n'est pas une simple moyenne des trois canaux : elle utilise une pondération qui reflète la sensibilité perceptuelle de l'œil humain aux différentes longueurs d'onde :
 
 $$L = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B$$
 
@@ -129,7 +129,7 @@ L'espace **HSV** (*Hue, Saturation, Value*) sépare la teinte (quelle couleur ?)
 ```python
 import cv2
 
-# Charger en BGR (convention OpenCV — noter l'inversion R/B par rapport à PIL)
+# Charger en BGR (convention OpenCV : noter l'inversion R/B par rapport à PIL)
 image_bgr = cv2.imread("scan_manuscrit_couleur.tif")
 
 # Convertir en HSV
@@ -180,7 +180,7 @@ def afficher_histogramme(image_gris: np.ndarray, titre: str = "") -> None:
 **Ce que l'histogramme révèle sur un manuscrit**
 
 Un histogramme typique de scan de manuscrit présente deux pics bien séparés :
-- Un **pic à droite** (valeurs élevées, proches de 255) : les pixels clairs du fond — le parchemin ou le papier.
+- Un **pic à droite** (valeurs élevées, proches de 255) : les pixels clairs du fond : le parchemin ou le papier.
 - Un **pic à gauche** (valeurs basses, proches de 0) : les pixels sombres de l'encre.
 
 La forme de ces pics et la distance qui les sépare indiquent immédiatement la qualité du scan :
@@ -199,7 +199,7 @@ Histogramme problématique (faible contraste, fond sale) :
          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
   0              128                255
-  Les deux populations se confondent — binarisation difficile
+  Les deux populations se confondent : binarisation difficile
 ```
 
 Un histogramme qui ne montre pas deux pics distincts indique un faible contraste, peut-être dû à une numérisation de mauvaise qualité, à un parchemin très uniformément coloré, ou à une encre fortement dégradée. Dans ces cas, la binarisation sera difficile et le CER de l'HTR s'en ressentira.
@@ -210,7 +210,7 @@ La **binarisation** consiste à transformer une image en niveaux de gris en une 
 
 **Le seuillage global (Otsu)**
 
-La méthode d'Otsu cherche automatiquement le seuil qui minimise la variance intra-classe — c'est-à-dire le seuil qui sépare au mieux les deux populations de pixels (fond et encre). Elle est efficace quand l'histogramme présente deux pics bien distincts.
+La méthode d'Otsu cherche automatiquement le seuil qui minimise la variance intra-classe : c'est-à-dire le seuil qui sépare au mieux les deux populations de pixels (fond et encre). Elle est efficace quand l'histogramme présente deux pics bien distincts.
 
 ```python
 import cv2
@@ -219,7 +219,7 @@ image = cv2.imread("scan.tif", cv2.IMREAD_GRAYSCALE)
 
 # Seuillage global d'Otsu
 # THRESH_BINARY_INV : les pixels sombres (encre) deviennent blancs,
-# le fond devient noir — convention courante en HTR
+# le fond devient noir : convention courante en HTR
 seuil_otsu, binaire_otsu = cv2.threshold(
     image, 0, 255,
     cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
@@ -229,7 +229,7 @@ print(f"Seuil automatique d'Otsu : {seuil_otsu}")
 
 **Le seuillage adaptatif (Sauvola)**
 
-Quand l'éclairage est inégal sur le scan — parchemin plus sombre au centre qu'en bordure, taches de lumière — un seuil global unique est insuffisant. Le **seuillage de Sauvola** calcule un seuil local pour chaque pixel, en fonction de la moyenne et de l'écart-type dans une fenêtre de voisinage autour de ce pixel. Il est généralement supérieur à Otsu pour les documents anciens.
+Quand l'éclairage est inégal sur le scan : parchemin plus sombre au centre qu'en bordure, taches de lumière : un seuil global unique est insuffisant. Le **seuillage de Sauvola** calcule un seuil local pour chaque pixel, en fonction de la moyenne et de l'écart-type dans une fenêtre de voisinage autour de ce pixel. Il est généralement supérieur à Otsu pour les documents anciens.
 
 ```python
 from skimage.filters import threshold_sauvola
@@ -240,7 +240,7 @@ seuil_sauvola = threshold_sauvola(image, window_size=25, k=0.2)
 binaire_sauvola = (image < seuil_sauvola).astype(np.uint8) * 255
 ```
 
-Sauvola est plus lent qu'Otsu (calcul local vs global) mais produit des résultats significativement meilleurs sur les documents dont le fond est non uniforme — ce qui est presque toujours le cas pour les manuscrits sur parchemin vieilli.
+Sauvola est plus lent qu'Otsu (calcul local vs global) mais produit des résultats significativement meilleurs sur les documents dont le fond est non uniforme : ce qui est presque toujours le cas pour les manuscrits sur parchemin vieilli.
 
 ---
 
@@ -248,39 +248,39 @@ Sauvola est plus lent qu'Otsu (calcul local vs global) mais produit des résulta
 
 ### 2.1 Ce que suppose l'OCR classique
 
-L'OCR (*Optical Character Recognition*) est une technologie mature pour les documents imprimés. Des outils comme Tesseract (Google), ABBYY FineReader ou Adobe Acrobat obtiennent des CER inférieurs à 1% sur du texte imprimé en police courante — une performance remarquable.
+L'OCR (*Optical Character Recognition*) est une technologie mature pour les documents imprimés. Des outils comme Tesseract (Google), ABBYY FineReader ou Adobe Acrobat obtiennent des CER inférieurs à 1% sur du texte imprimé en police courante : une performance remarquable.
 
 Ces performances reposent sur des hypothèses implicites qui sont toutes remplies pour un document imprimé et toutes violées pour un manuscrit médiéval.
 
 ### 2.2 Les hypothèses violées
 
-**Hypothèse 1 — La police est connue**
+**Hypothèse 1 : La police est connue**
 
 L'OCR classique est entraîné sur des polices de caractères connues (Times, Arial, Garamond…). Chaque caractère a une forme fixe, reproductible à l'identique à chaque occurrence.
 
-Dans un manuscrit médiéval, chaque lettre est tracée à la main, avec des variations d'un mot à l'autre et d'une ligne à l'autre. Pire : il n'existe pas deux manuscrits ayant la même « police ». La main du copiste est unique. Un OCR entraîné sur des polices ne peut pas reconnaître des tracés manuels sans avoir été spécifiquement adapté à ce type d'écriture — et encore, seulement après avoir appris *cette* main particulière.
+Dans un manuscrit médiéval, chaque lettre est tracée à la main, avec des variations d'un mot à l'autre et d'une ligne à l'autre. Pire : il n'existe pas deux manuscrits ayant la même « police ». La main du copiste est unique. Un OCR entraîné sur des polices ne peut pas reconnaître des tracés manuels sans avoir été spécifiquement adapté à ce type d'écriture : et encore, seulement après avoir appris *cette* main particulière.
 
-**Hypothèse 2 — Les caractères sont isolables**
+**Hypothèse 2 : Les caractères sont isolables**
 
-L'OCR classique segmente l'image en caractères individuels — chaque lettre est découpée et classée séparément. Cette segmentation est possible car dans un texte imprimé, chaque caractère est séparé des autres par de l'espace blanc.
+L'OCR classique segmente l'image en caractères individuels : chaque lettre est découpée et classée séparément. Cette segmentation est possible car dans un texte imprimé, chaque caractère est séparé des autres par de l'espace blanc.
 
 Dans un manuscrit cursif, les lettres se connectent. Il n'existe pas de séparation physique entre *n* et *i* dans le mot *ni*, ni entre *l* et *i* dans *li*. La segmentation en caractères individuels est soit impossible, soit arbitraire.
 
-**Hypothèse 3 — L'alignement horizontal est régulier**
+**Hypothèse 3 : L'alignement horizontal est régulier**
 
 L'OCR classique suppose que les lignes de texte sont horizontales et régulièrement espacées. Il peut tolérer une légère inclinaison, mais pas les variations qui caractérisent les manuscrits médiévaux : lignes légèrement courbées, espacement inter-lignes variable, lignes qui montent ou descendent progressivement.
 
-**Hypothèse 4 — La mise en page est simple**
+**Hypothèse 4 : La mise en page est simple**
 
 L'OCR classique traite le texte comme un flux continu, de gauche à droite et de haut en bas. Il ne sait pas gérer les colonnes multiples, les rubriques, les lettrines de grande taille, les notes marginales ou les illustrations intercalées dans le texte.
 
-**Hypothèse 5 — L'alphabet est connu et fermé**
+**Hypothèse 5 : L'alphabet est connu et fermé**
 
 L'OCR classique classe chaque caractère dans un alphabet fini. Pour le latin moderne, cet alphabet fait 26 lettres + quelques signes diacritiques. Pour l'ancien français médiéval, il faudrait inclure les signes d'abréviation, le *s* long, les ligatures *æ*, *œ*, le signe tironien *⁊* (un 7 stylisé qui représente *et*), et d'autres signes sans équivalent dans l'alphabet moderne.
 
 ### 2.3 Pourquoi le HTR est une réponse différente
 
-La **Handwritten Text Recognition** (HTR) ne segmente pas en caractères — elle traite la ligne entière comme une séquence. Au lieu de classifier des caractères isolés, elle génère une séquence de caractères à partir de l'image entière de la ligne, en utilisant un modèle séquentiel (RNN, Transformer) qui peut exploiter le contexte.
+La **Handwritten Text Recognition** (HTR) ne segmente pas en caractères : elle traite la ligne entière comme une séquence. Au lieu de classifier des caractères isolés, elle génère une séquence de caractères à partir de l'image entière de la ligne, en utilisant un modèle séquentiel (RNN, Transformer) qui peut exploiter le contexte.
 
 Ce changement de paradigme, des années 2010 aux années 2020, est la raison pour laquelle les outils modernes d'HTR (TrOCR, Kraken) sont radicalement supérieurs aux OCR classiques sur les manuscrits. Nous y reviendrons en détail au Jour 3.
 
@@ -300,7 +300,7 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│               ÉTAPE 1 — PRÉTRAITEMENT                   │
+│               ÉTAPE 1 : PRÉTRAITEMENT                   │
 │  • Correction d'orientation (deskewing)                 │
 │  • Normalisation du contraste (CLAHE)                   │
 │  • Binarisation adaptative (Sauvola)                    │
@@ -310,7 +310,7 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│          ÉTAPE 2 — SEGMENTATION DE LAYOUT               │
+│          ÉTAPE 2 : SEGMENTATION DE LAYOUT               │
 │  • Détection des régions : texte / image / marge        │
 │  • Classification de chaque région                      │
 │  Outils : SAM (Segment Anything Model)                  │
@@ -320,7 +320,7 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
 ┌──────────────────────┐  ┌───────────────────────────────┐
 │  BRANCHE TEXTE       │  │  BRANCHE IMAGE                │
 │                      │  │                               │
-│ ÉTAPE 3 — SEGM.      │  │ ÉTAPE 3b — DESCRIPTION        │
+│ ÉTAPE 3 : SEGM.      │  │ ÉTAPE 3b : DESCRIPTION        │
 │ DE LIGNES            │  │ • Description automatique     │
 │ • Détection des      │  │   des enluminures et dessins  │
 │   lignes de base     │  │ Outils : CLIP, LLaVA          │
@@ -333,7 +333,7 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
            │
            ▼
 ┌─────────────────────────────────────────────────────────┐
-│               ÉTAPE 4 — HTR PAR LIGNE                   │
+│               ÉTAPE 4 : HTR PAR LIGNE                   │
 │  • Reconnaissance du texte dans chaque image de ligne   │
 │  • Score de confiance par caractère                     │
 │  Outils : TrOCR (fine-tuné), Kraken                     │
@@ -341,7 +341,7 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│            ÉTAPE 5 — AGRÉGATION ET CONSENSUS            │
+│            ÉTAPE 5 : AGRÉGATION ET CONSENSUS            │
 │  • Vote pondéré entre plusieurs modèles                 │
 │  • Calcul du score de confiance global par ligne        │
 │  • Détection des lignes nécessitant une révision        │
@@ -349,7 +349,7 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│               ÉTAPE 6 — EXPORT STRUCTURÉ                │
+│               ÉTAPE 6 : EXPORT STRUCTURÉ                │
 │  • Format JSON (pour le module NLP)                     │
 │  • Format TEI XML (optionnel, pour les humanités)       │
 │  • Métriques : CER estimé, lignes à réviser             │
@@ -364,9 +364,9 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
 
 ### 3.2 Pourquoi cet ordre ?
 
-Chaque étape conditionne la suivante, et une erreur à une étape précoce se propage et s'amplifie dans toutes les étapes suivantes. C'est pourquoi le prétraitement — l'étape la plus « basse » techniquement — mérite autant d'attention que les modèles sophistiqués qui viennent après.
+Chaque étape conditionne la suivante, et une erreur à une étape précoce se propage et s'amplifie dans toutes les étapes suivantes. C'est pourquoi le prétraitement : l'étape la plus « basse » techniquement : mérite autant d'attention que les modèles sophistiqués qui viennent après.
 
-Un exemple concret : si la binarisation laisse du bruit (des pixels parasites qui ressemblent à de l'encre), la segmentation de lignes détectera de fausses lignes. Chaque fausse ligne produit une image de ligne qui ne contient pas de texte réel. Le modèle HTR recevra ces images et produira des transcriptions de charabia. Ces transcriptions de charabia seront incluses dans le dataset livré au module NLP. Le module NLP essaiera de les corriger — et échouera.
+Un exemple concret : si la binarisation laisse du bruit (des pixels parasites qui ressemblent à de l'encre), la segmentation de lignes détectera de fausses lignes. Chaque fausse ligne produit une image de ligne qui ne contient pas de texte réel. Le modèle HTR recevra ces images et produira des transcriptions de charabia. Ces transcriptions de charabia seront incluses dans le dataset livré au module NLP. Le module NLP essaiera de les corriger : et échouera.
 
 La propagation des erreurs dans un pipeline est l'un des défis fondamentaux des systèmes de traitement de documents. On y fait face en testant chaque étape de façon isolée, en métrisant les sorties de chaque étape, et en définissant des critères d'acceptance avant de passer à l'étape suivante.
 
@@ -393,7 +393,7 @@ Cette section présente brièvement chaque outil que nous utiliserons, avec son 
 
 **OpenCV** (*Open Source Computer Vision Library*) est la bibliothèque de référence pour le traitement d'images en Python (et C++). Développée depuis 1999, elle contient des milliers de fonctions couvrant le prétraitement, la détection de contours, la transformation géométrique, le flot optique, et bien plus.
 
-Dans notre pipeline, OpenCV est utilisé principalement pour le prétraitement : correction d'orientation, normalisation du contraste, opérations morphologiques (dilatation, érosion — utiles pour nettoyer la binarisation).
+Dans notre pipeline, OpenCV est utilisé principalement pour le prétraitement : correction d'orientation, normalisation du contraste, opérations morphologiques (dilatation, érosion : utiles pour nettoyer la binarisation).
 
 ```python
 import cv2
@@ -435,7 +435,7 @@ from skimage.measure import label, regionprops
 
 ### 4.4 Kraken
 
-**Kraken** est un système HTR open source développé à l'École pratique des hautes études (EPHE) par Benjamin Kiessling. Contrairement aux outils génériques, il est conçu *spécifiquement* pour les documents patrimoniaux — manuscrits, documents d'archives, livres anciens.
+**Kraken** est un système HTR open source développé à l'École pratique des hautes études (EPHE) par Benjamin Kiessling. Contrairement aux outils génériques, il est conçu *spécifiquement* pour les documents patrimoniaux : manuscrits, documents d'archives, livres anciens.
 
 Il effectue deux tâches dans notre pipeline :
 - La **segmentation de lignes** (*kraken segment*) : détecter les lignes de base (*baseline*) du texte dans une image de page.
@@ -479,7 +479,7 @@ print(f"Transcription : {transcription}")
 
 TrOCR pré-entraîné sur des manuscrits modernes (dataset IAM) sera notre point de départ. Nous le fine-tunerons sur des données médiévales en Jour 3.
 
-### 4.6 SAM — Segment Anything Model
+### 4.6 SAM : Segment Anything Model
 
 **SAM** est un modèle de segmentation développé par Meta AI et publié en 2023. Il peut segmenter n'importe quel objet dans une image à partir d'un prompt minimal : un point, une boîte englobante, ou rien du tout (segmentation automatique).
 
@@ -566,7 +566,7 @@ outputs = model(**inputs)
 probabilites = outputs.logits_per_image.softmax(dim=1)
 
 for desc, prob in zip(descriptions, probabilites[0]):
-    print(f"{prob:.1%} — {desc}")
+    print(f"{prob:.1%} : {desc}")
 ```
 
 ---
@@ -591,7 +591,7 @@ def verifier_import(nom_module: str, nom_affiche: str = None) -> bool:
         print(f"  [OK] {nom_affiche}")
         return True
     except ImportError as e:
-        print(f"  [MANQUANT] {nom_affiche} — {e}")
+        print(f"  [MANQUANT] {nom_affiche} : {e}")
         return False
 
 print(f"Python {sys.version}\n")
@@ -639,7 +639,7 @@ pip install langchain umap-learn
 Le Jour 1 a posé trois types de fondements :
 
 **Des fondements philologiques (1.1)**
-La nature du manuscrit médiéval, les systèmes d'écriture, la variabilité de la langue, les obstacles à la lecture — autant de contraintes qui définissent le problème avant toute considération technique.
+La nature du manuscrit médiéval, les systèmes d'écriture, la variabilité de la langue, les obstacles à la lecture : autant de contraintes qui définissent le problème avant toute considération technique.
 
 **Des fondements méthodologiques (1.2 et 1.3)**
 La traduction du problème philologique en spécification ML : granularité de l'unité d'apprentissage (la ligne), définition de la vérité terrain, métriques d'évaluation (CER), gestion de l'ambiguïté, et construction de la baseline humaine par transcription manuelle.
@@ -647,7 +647,7 @@ La traduction du problème philologique en spécification ML : granularité de l
 **Des fondements techniques (1.4)**
 La représentation numérique d'une image, les outils du pipeline, et l'architecture globale du système que nous allons construire.
 
-Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de la théorie des architectures (Jour 2 — CNN et ViT) jusqu'à la livraison du dataset au module NLP (Jour 5).
+Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de la théorie des architectures (Jour 2 : CNN et ViT) jusqu'à la livraison du dataset au module NLP (Jour 5).
 
 ---
 
@@ -655,43 +655,43 @@ Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de
 
 ### Traitement numérique des images
 
-- **Gonzalez, R. C., Woods, R. E.** (2018). *Digital Image Processing* (4e éd.). Pearson. — La référence encyclopédique du domaine. Chapitres 2 (Fundamentals), 3 (Intensity Transformations) et 10 (Image Segmentation) sont directement pertinents pour ce cours.
+- **Gonzalez, R. C., Woods, R. E.** (2018). *Digital Image Processing* (4e éd.). Pearson. : La référence encyclopédique du domaine. Chapitres 2 (Fundamentals), 3 (Intensity Transformations) et 10 (Image Segmentation) sont directement pertinents pour ce cours.
 
-- **Bradski, G., Kaehler, A.** (2008). *Learning OpenCV: Computer Vision with the OpenCV Library*. O'Reilly Media. — Le livre de référence d'OpenCV, bien que certaines parties soient à actualiser pour l'API actuelle. La documentation officielle ([docs.opencv.org](https://docs.opencv.org)) reste la ressource la plus à jour.
+- **Bradski, G., Kaehler, A.** (2008). *Learning OpenCV: Computer Vision with the OpenCV Library*. O'Reilly Media. : Le livre de référence d'OpenCV, bien que certaines parties soient à actualiser pour l'API actuelle. La documentation officielle ([docs.opencv.org](https://docs.opencv.org)) reste la ressource la plus à jour.
 
-- **Van der Walt, S. et al.** (2014). *scikit-image: Image Processing in Python*. PeerJ, 2, e453. — L'article de référence de scikit-image, présentant la philosophie de la bibliothèque et ses algorithmes principaux.
+- **Van der Walt, S. et al.** (2014). *scikit-image: Image Processing in Python*. PeerJ, 2, e453. : L'article de référence de scikit-image, présentant la philosophie de la bibliothèque et ses algorithmes principaux.
 
-- **Sauvola, J., Pietikäinen, M.** (2000). *Adaptive Document Image Binarization*. Pattern Recognition, 33(2), 225–236. — L'article original du seuillage adaptatif de Sauvola, incontournable pour la binarisation de documents anciens.
+- **Sauvola, J., Pietikäinen, M.** (2000). *Adaptive Document Image Binarization*. Pattern Recognition, 33(2), 225–236. : L'article original du seuillage adaptatif de Sauvola, incontournable pour la binarisation de documents anciens.
 
-- **Otsu, N.** (1979). *A Threshold Selection Method from Gray-Level Histograms*. IEEE Transactions on Systems, Man, and Cybernetics, 9(1), 62–66. — L'article fondateur du seuillage automatique d'Otsu.
+- **Otsu, N.** (1979). *A Threshold Selection Method from Gray-Level Histograms*. IEEE Transactions on Systems, Man, and Cybernetics, 9(1), 62–66. : L'article fondateur du seuillage automatique d'Otsu.
 
 ### OCR et HTR : état de l'art
 
-- **Smith, R.** (2007). *An Overview of the Tesseract OCR Engine*. Ninth International Conference on Document Analysis and Recognition (ICDAR). — Présentation de Tesseract, le moteur OCR open source de référence, et de ses limites sur les documents non standards.
+- **Smith, R.** (2007). *An Overview of the Tesseract OCR Engine*. Ninth International Conference on Document Analysis and Recognition (ICDAR). : Présentation de Tesseract, le moteur OCR open source de référence, et de ses limites sur les documents non standards.
 
-- **Breuel, T. M.** (2008). *The OCRopus Open Source OCR System*. Document Recognition and Retrieval XV, 6815. — OCRopus a introduit l'approche par réseau de neurones récurrents pour l'OCR/HTR, posant les bases des approches modernes.
+- **Breuel, T. M.** (2008). *The OCRopus Open Source OCR System*. Document Recognition and Retrieval XV, 6815. : OCRopus a introduit l'approche par réseau de neurones récurrents pour l'OCR/HTR, posant les bases des approches modernes.
 
-- **Li, M., Lyu, T., Yao, T., Ye, J., Lu, T., Zheng, Y., Huang, F.** (2021). *TrOCR: Transformer-based Optical Character Recognition with Pre-trained Models*. AAAI 2023. [arXiv:2109.10282] — L'article de référence de TrOCR.
+- **Li, M., Lyu, T., Yao, T., Ye, J., Lu, T., Zheng, Y., Huang, F.** (2021). *TrOCR: Transformer-based Optical Character Recognition with Pre-trained Models*. AAAI 2023. [arXiv:2109.10282] : L'article de référence de TrOCR.
 
-- **Kiessling, B.** (2019). *Kraken — an Universal Text Recognizer for the Humanities*. Digital Humanities Conference (DH2019). — Présentation synthétique de Kraken par son auteur, avec les motivations de conception.
+- **Kiessling, B.** (2019). *Kraken : an Universal Text Recognizer for the Humanities*. Digital Humanities Conference (DH2019). : Présentation synthétique de Kraken par son auteur, avec les motivations de conception.
 
 ### Modèles fondateurs du pipeline
 
-- **Dosovitskiy, A. et al.** (2020). *An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale*. ICLR 2021. [arXiv:2010.11929] — ViT, la brique de base de TrOCR et de DINO.
+- **Dosovitskiy, A. et al.** (2020). *An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale*. ICLR 2021. [arXiv:2010.11929] : ViT, la brique de base de TrOCR et de DINO.
 
-- **Caron, M. et al.** (2021). *Emerging Properties in Self-Supervised Vision Transformers*. ICCV 2021. [arXiv:2104.14294] — DINO.
+- **Caron, M. et al.** (2021). *Emerging Properties in Self-Supervised Vision Transformers*. ICCV 2021. [arXiv:2104.14294] : DINO.
 
-- **Radford, A. et al.** (2021). *Learning Transferable Visual Models From Natural Language Supervision*. ICML 2021. — CLIP.
+- **Radford, A. et al.** (2021). *Learning Transferable Visual Models From Natural Language Supervision*. ICML 2021. : CLIP.
 
-- **Kirillov, A. et al.** (2023). *Segment Anything*. ICCV 2023. [arXiv:2304.02643] — SAM.
+- **Kirillov, A. et al.** (2023). *Segment Anything*. ICCV 2023. [arXiv:2304.02643] : SAM.
 
 ### Ressources pratiques
 
-- **Documentation HuggingFace Transformers** — [huggingface.co/docs/transformers](https://huggingface.co/docs/transformers). Pour TrOCR, CLIP, DINO et tous les modèles pré-entraînés.
+- **Documentation HuggingFace Transformers** : [huggingface.co/docs/transformers](https://huggingface.co/docs/transformers). Pour TrOCR, CLIP, DINO et tous les modèles pré-entraînés.
 
-- **Documentation Kraken** — [kraken.re](https://kraken.re). Guide complet d'installation, entraînement et utilisation.
+- **Documentation Kraken** : [kraken.re](https://kraken.re). Guide complet d'installation, entraînement et utilisation.
 
-- **Documentation SAM** — [github.com/facebookresearch/segment-anything](https://github.com/facebookresearch/segment-anything). Avec notebooks d'exemples.
+- **Documentation SAM** : [github.com/facebookresearch/segment-anything](https://github.com/facebookresearch/segment-anything). Avec notebooks d'exemples.
 
 ---
 

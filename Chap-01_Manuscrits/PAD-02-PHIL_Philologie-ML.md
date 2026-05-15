@@ -1,4 +1,4 @@
-# Cours 1.2 — Traduire la philologie en problème d'apprentissage automatique
+# Cours 1.2 : Traduire la philologie en problème d'apprentissage automatique
 
 **Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
 
@@ -12,7 +12,7 @@
 
 La section 1.1 a décrit le manuscrit médiéval tel que le voit un philologue ou un paléographe : un objet matériel singulier, produit d'un acte d'écriture situé dans le temps et l'espace, porteur d'une langue variable et d'un texte dont la stabilité est une construction intellectuelle plutôt qu'une réalité physique.
 
-Cette section a pour ambition de construire le **pont** entre ce monde et celui de l'apprentissage automatique. Ce pont est moins évident qu'il n'y paraît, et les erreurs de traduction ont des conséquences sérieuses : choisir la mauvaise unité d'apprentissage, construire des données d'entraînement mal adaptées, ou utiliser une métrique qui mesure autre chose que ce qu'on cherche à optimiser — chacune de ces erreurs peut rendre un modèle techniquement impeccable et pratiquement inutile.
+Cette section a pour ambition de construire le **pont** entre ce monde et celui de l'apprentissage automatique. Ce pont est moins évident qu'il n'y paraît, et les erreurs de traduction ont des conséquences sérieuses : choisir la mauvaise unité d'apprentissage, construire des données d'entraînement mal adaptées, ou utiliser une métrique qui mesure autre chose que ce qu'on cherche à optimiser : chacune de ces erreurs peut rendre un modèle techniquement impeccable et pratiquement inutile.
 
 L'objectif ici n'est pas d'inventer une nouvelle méthodologie. La communauté HTR (Handwritten Text Recognition) a accumulé depuis une vingtaine d'années une expérience considérable sur ces questions, et nous allons en hériter les meilleures pratiques tout en comprenant pourquoi elles ont été adoptées.
 
@@ -31,7 +31,7 @@ Ce que le modèle reçoit. Dans notre cas : une image, ou une portion d'image.
 Ce que le modèle doit prédire. Dans notre cas : une chaîne de caractères (la transcription du texte visible dans l'image).
 
 **La fonction de perte (*loss function*)**
-Une mesure de l'écart entre la prédiction du modèle et la vérité terrain. C'est ce que le modèle minimise pendant l'entraînement. Le choix de cette fonction est lié — mais pas identique — au choix de la métrique d'évaluation.
+Une mesure de l'écart entre la prédiction du modèle et la vérité terrain. C'est ce que le modèle minimise pendant l'entraînement. Le choix de cette fonction est lié : mais pas identique : au choix de la métrique d'évaluation.
 
 Ces trois éléments sont contraints les uns par les autres. Changer l'unité d'entrée (passer de la ligne au mot, par exemple) change la nature des sorties attendues, les architectures envisageables, les stratégies d'augmentation de données, et les métriques pertinentes. C'est pourquoi le choix de la **granularité** est la première décision à prendre, et la plus structurante.
 
@@ -49,13 +49,13 @@ Pour un manuscrit médiéval, la situation est radicalement différente :
 
 - **L'annotation est ambiguë.** Comme expliqué en 1.1, deux paléographes experts produisent des transcriptions qui divergent sur 3 à 8% des caractères en moyenne sur les passages difficiles. Il n'existe pas toujours de « bonne » réponse unique.
 
-Ces trois caractéristiques — lenteur, qualification, ambiguïté — définissent les contraintes fondamentales du projet. Elles imposent de réfléchir soigneusement à la granularité (pour maximiser l'utilité de chaque heure d'annotation), à la constitution des datasets (pour réduire le besoin d'annotations humaines), et aux métriques (pour rendre compte de l'ambiguïté plutôt que de la masquer).
+Ces trois caractéristiques : lenteur, qualification, ambiguïté : définissent les contraintes fondamentales du projet. Elles imposent de réfléchir soigneusement à la granularité (pour maximiser l'utilité de chaque heure d'annotation), à la constitution des datasets (pour réduire le besoin d'annotations humaines), et aux métriques (pour rendre compte de l'ambiguïté plutôt que de la masquer).
 
 ---
 
 ## 2. Le choix de la granularité : quelle est l'unité d'apprentissage ?
 
-C'est la première décision architecturale du projet, et elle est largement irréversible une fois le dataset constitué. Un dataset annoté au niveau de la ligne ne peut pas être utilisé directement pour entraîner un modèle de reconnaissance de caractères isolés — et vice versa.
+C'est la première décision architecturale du projet, et elle est largement irréversible une fois le dataset constitué. Un dataset annoté au niveau de la ligne ne peut pas être utilisé directement pour entraîner un modèle de reconnaissance de caractères isolés : et vice versa.
 
 La hiérarchie naturelle d'un manuscrit est la suivante :
 
@@ -66,7 +66,7 @@ Document (ensemble des pages)
               └── Ligne de texte
                    └── Mot
                         └── Graphème (caractère ou groupe de caractères)
-                             └── Trait (stroke — niveau de l'écriture physique)
+                             └── Trait (stroke : niveau de l'écriture physique)
 ```
 
 À chaque niveau correspond une famille d'approches, avec ses avantages et ses contraintes.
@@ -92,7 +92,7 @@ L'approche classique de l'OCR (Optical Character Recognition) pour les documents
 
 Deux obstacles rendent cette approche impraticable :
 
-*Premier obstacle : la segmentation.* Pour classer les caractères individuellement, il faut d'abord les isoler. Dans un texte imprimé avec une police régulière, cela est aisé : chaque caractère est séparé des autres par de l'espace blanc. Dans un manuscrit avec des écritures cursives ou gothiques, les lettres se touchent, se chevauchent et se fondent dans des ligatures. Il n'existe pas de frontière physique entre deux caractères adjacents. La segmentation en caractères est un problème aussi difficile — sinon plus — que la reconnaissance elle-même.
+*Premier obstacle : la segmentation.* Pour classer les caractères individuellement, il faut d'abord les isoler. Dans un texte imprimé avec une police régulière, cela est aisé : chaque caractère est séparé des autres par de l'espace blanc. Dans un manuscrit avec des écritures cursives ou gothiques, les lettres se touchent, se chevauchent et se fondent dans des ligatures. Il n'existe pas de frontière physique entre deux caractères adjacents. La segmentation en caractères est un problème aussi difficile : sinon plus : que la reconnaissance elle-même.
 
 *Second obstacle : l'ambiguïté contextuelle.* Le problème des minimes, décrit en 1.1, illustre un fait fondamental : **dans les écritures médiévales, beaucoup de caractères ne sont lisibles qu'en contexte**. Un segment vertical isolé ne peut être identifié comme *i*, *n*, *m*, *u* ou partie de *r* que par un modèle qui considère simultanément ses voisins. Un modèle de classification de caractères isolés est, par construction, aveugle à ce contexte.
 
@@ -127,11 +127,11 @@ Sortie : "En cel tems que li rois Artus regnoit en la grant Bretaigne"
 
 *Il évite la segmentation en caractères.* Pas besoin d'isoler les lettres individuelles : le modèle reçoit la ligne entière et produit la transcription entière.
 
-*Il fournit assez de contexte.* Une ligne de texte contient typiquement 40 à 80 caractères — suffisamment pour que le modèle exploite le contexte local pour lever les ambiguïtés graphiques.
+*Il fournit assez de contexte.* Une ligne de texte contient typiquement 40 à 80 caractères : suffisamment pour que le modèle exploite le contexte local pour lever les ambiguïtés graphiques.
 
-*Il correspond à une unité naturelle du document.* La ligne est la structure élémentaire de la page manuscrite : les scripteurs écrivent ligne par ligne, et les lignes sont séparées par de l'espace blanc — même si cet espace est irrégulier, il est en général suffisant pour une segmentation automatique.
+*Il correspond à une unité naturelle du document.* La ligne est la structure élémentaire de la page manuscrite : les scripteurs écrivent ligne par ligne, et les lignes sont séparées par de l'espace blanc : même si cet espace est irrégulier, il est en général suffisant pour une segmentation automatique.
 
-*Les annotations au niveau de la ligne sont raisonnablement rapides.* Un annotateur peut produire entre 300 et 600 annotations de lignes par heure pour des textes médiévaux relativement lisibles — soit 3 à 6 fois plus vite qu'une transcription intégrale de page avec structuration.
+*Les annotations au niveau de la ligne sont raisonnablement rapides.* Un annotateur peut produire entre 300 et 600 annotations de lignes par heure pour des textes médiévaux relativement lisibles : soit 3 à 6 fois plus vite qu'une transcription intégrale de page avec structuration.
 
 *Les architectures modernes sont conçues pour ce niveau.* TrOCR, Kraken, HTR+ et la plupart des modèles HTR de référence opèrent au niveau de la ligne.
 
@@ -143,7 +143,7 @@ Travailler au niveau de la ligne implique un **pipeline en deux étapes** :
 
 2. **HTR proprement dit** : reconnaître le texte dans chaque image de ligne extraite. C'est le problème principal du module.
 
-Ces deux étapes ont leurs propres sources d'erreur, et les erreurs de la première se propagent dans la seconde (une ligne mal segmentée — coupée en deux, ou incluant du texte de la ligne suivante — produit une transcription dégradée même si le modèle HTR est excellent).
+Ces deux étapes ont leurs propres sources d'erreur, et les erreurs de la première se propagent dans la seconde (une ligne mal segmentée : coupée en deux, ou incluant du texte de la ligne suivante : produit une transcription dégradée même si le modèle HTR est excellent).
 
 ### 2.5 Le niveau de la région
 
@@ -168,7 +168,7 @@ Ces tâches seront traitées avec DINO et CLIP en Jour 3.
 
 ### 3.1 La vérité terrain en apprentissage supervisé classique
 
-Dans un problème de classification d'images standard, la vérité terrain est ce que l'on appelle le *gold standard* : une réponse correcte, unique, fournie par un expert (ou construite par consensus entre plusieurs experts). Pour 98% des images du dataset ImageNet, il n'y a pas de débat sur l'étiquette correcte — un chien est un chien.
+Dans un problème de classification d'images standard, la vérité terrain est ce que l'on appelle le *gold standard* : une réponse correcte, unique, fournie par un expert (ou construite par consensus entre plusieurs experts). Pour 98% des images du dataset ImageNet, il n'y a pas de débat sur l'étiquette correcte : un chien est un chien.
 
 Cette unicité de la vérité terrain est une hypothèse de travail, rarement questionnée en apprentissage automatique classique. Elle est profondément remise en cause par les manuscrits médiévaux.
 
@@ -194,7 +194,7 @@ La situation réelle est encore plus nuancée :
 
 **Choix éditoriaux divergents.** Développer une abréviation d'une façon ou d'une autre (par exemple, le signe qui note *con-*, *com-*, *cum-* ou *cun-* selon les cas) relève d'une interprétation linguistique, pas d'une lecture graphique pure. Deux experts font des choix différents, tous deux légitimes.
 
-**Variabilité inter-annotateur mesurable.** Les études empiriques menées dans des projets collaboratifs (Transkribus, eScriptorium, Wikisource) mesurent systématiquement ce que l'on appelle le **taux d'accord inter-annotateurs** (*inter-annotator agreement* ou IAA). Pour les manuscrits médiévaux difficiles, ce taux descend à 92–97% au niveau du caractère — ce qui peut sembler élevé, mais représente une divergence de 3 à 8 caractères sur cent, soit plusieurs erreurs par ligne.
+**Variabilité inter-annotateur mesurable.** Les études empiriques menées dans des projets collaboratifs (Transkribus, eScriptorium, Wikisource) mesurent systématiquement ce que l'on appelle le **taux d'accord inter-annotateurs** (*inter-annotator agreement* ou IAA). Pour les manuscrits médiévaux difficiles, ce taux descend à 92–97% au niveau du caractère : ce qui peut sembler élevé, mais représente une divergence de 3 à 8 caractères sur cent, soit plusieurs erreurs par ligne.
 
 ### 3.3 Ce que cela implique pour la conception du dataset
 
@@ -226,7 +226,7 @@ En format JSON pour notre pipeline :
 ```
 
 **Troisième implication : les métriques doivent tenir compte de la variabilité.**
-Un modèle évalué contre une seule transcription de référence sera pénalisé pour des erreurs qui ne sont pas des erreurs — des choix différents mais également valides. Une évaluation plus honnête compare le modèle contre *plusieurs* transcriptions de référence et retient le meilleur score, ou calcule une moyenne.
+Un modèle évalué contre une seule transcription de référence sera pénalisé pour des erreurs qui ne sont pas des erreurs : des choix différents mais également valides. Une évaluation plus honnête compare le modèle contre *plusieurs* transcriptions de référence et retient le meilleur score, ou calcule une moyenne.
 
 ### 3.4 Niveaux de fidélité de la transcription et leurs vérités terrain respectives
 
@@ -243,13 +243,13 @@ On développe les abréviations les plus claires (celles dont le développement 
 **Transcription normalisée**
 On normalise l'orthographe, on développe toutes les abréviations, on corrige les erreurs manifestes du scribe. Cette transcription est plus lisible mais plus subjective. Elle est utile comme cible pour le module NLP, moins comme vérité terrain pour l'HTR.
 
-> **Pour notre projet :** nous visons une **transcription semi-diplomatique** comme vérité terrain — développement des abréviations claires, conservation de l'orthographe médiévale, signalement des incertitudes. Ce choix sera documenté dans le data contract livré au module NLP.
+> **Pour notre projet :** nous visons une **transcription semi-diplomatique** comme vérité terrain : développement des abréviations claires, conservation de l'orthographe médiévale, signalement des incertitudes. Ce choix sera documenté dans le data contract livré au module NLP.
 
 ---
 
 ## 4. Les métriques d'évaluation
 
-Choisir une métrique, c'est définir ce qu'on entend par « le modèle fonctionne bien ». Un mauvais choix de métrique conduit à optimiser la mauvaise quantité. Dans ce domaine comme dans beaucoup d'autres en ML, les métriques ne sont pas neutres — elles reflètent des jugements sur ce qui compte.
+Choisir une métrique, c'est définir ce qu'on entend par « le modèle fonctionne bien ». Un mauvais choix de métrique conduit à optimiser la mauvaise quantité. Dans ce domaine comme dans beaucoup d'autres en ML, les métriques ne sont pas neutres : elles reflètent des jugements sur ce qui compte.
 
 ### 4.1 Le Character Error Rate (CER)
 
@@ -323,7 +323,7 @@ $$\text{CER} = \frac{1}{20} = 5\%$$
 
 *Première raison : les mots courts.* En ancien français, de nombreux mots fréquents sont très courts (*li*, *la*, *le*, *de*, *en*, *et*…). Une substitution d'un seul caractère dans *li* → *la* est une erreur d'un caractère (faible CER), mais une erreur d'un mot entier (fort impact sur le WER).
 
-*Seconde raison : l'orthographe variable.* Si le modèle prédit *rei* et la référence est *roi*, il s'agit d'une substitution d'un mot entier selon le WER, alors que le CER ne compte qu'un seul caractère différent. Or *rei* est une forme authentique et légitime de *roi* en ancien français — l'erreur est discutable.
+*Seconde raison : l'orthographe variable.* Si le modèle prédit *rei* et la référence est *roi*, il s'agit d'une substitution d'un mot entier selon le WER, alors que le CER ne compte qu'un seul caractère différent. Or *rei* est une forme authentique et légitime de *roi* en ancien français : l'erreur est discutable.
 
 **Verdict :** le WER est une métrique légitime pour évaluer la lisibilité globale d'une transcription, mais il pénalise trop sévèrement les variations orthographiques légitimes de l'ancien français. Dans notre projet, le **CER est la métrique principale**. Le WER est calculé à titre indicatif.
 
@@ -349,7 +349,7 @@ Même un CER bien conçu présente des limites structurelles importantes dans no
 
 Le CER suppose l'existence d'une référence univoque. Si le modèle prédit `roi` et que la référence est `rey`, le CER compte une substitution. Mais `rei`, `roi`, `roy`, `rex` sont toutes des formes attestées du même mot en ancien français. La pénalité est injuste.
 
-Une approche partielle consiste à **normaliser** à la fois la référence et la prédiction avant de calculer le CER : convertir toutes les formes en une forme canonique. Mais cela suppose un dictionnaire de normalisation de l'ancien français — qui n'existe pas de façon exhaustive, précisément parce que l'orthographe médiévale est ouverte.
+Une approche partielle consiste à **normaliser** à la fois la référence et la prédiction avant de calculer le CER : convertir toutes les formes en une forme canonique. Mais cela suppose un dictionnaire de normalisation de l'ancien français : qui n'existe pas de façon exhaustive, précisément parce que l'orthographe médiévale est ouverte.
 
 **Le problème des abréviations développées**
 
@@ -437,7 +437,7 @@ Revenons au constat de départ : les experts humains ne s'accordent pas parfaite
 
 Au lieu de chercher un seul modèle parfait (qui n'existe pas), on peut combiner plusieurs modèles imparfaits de façon à ce que leurs erreurs se compensent partiellement. C'est le principe des **méthodes d'ensemble** (*ensemble methods*) en apprentissage automatique, appliqué ici à la transcription.
 
-Cette idée n'est pas nouvelle en philologie non plus : l'édition critique d'un texte médiéval consiste précisément à comparer plusieurs manuscrits (les *témoins*) d'un même texte pour reconstituer la forme la plus proche de l'original — en supposant que les erreurs de copie sont distribuées de façon aléatoire entre les témoins indépendants, et qu'un passage confirmé par la majorité des témoins a plus de chances d'être correct.
+Cette idée n'est pas nouvelle en philologie non plus : l'édition critique d'un texte médiéval consiste précisément à comparer plusieurs manuscrits (les *témoins*) d'un même texte pour reconstituer la forme la plus proche de l'original : en supposant que les erreurs de copie sont distribuées de façon aléatoire entre les témoins indépendants, et qu'un passage confirmé par la majorité des témoins a plus de chances d'être correct.
 
 ### 6.2 Le vote majoritaire
 
@@ -467,7 +467,7 @@ Une fois les transcriptions alignées, le vote position par position est bien d�
 
 Tous les modèles ne sont pas également fiables. Si l'on sait a priori que le modèle A est meilleur que le modèle B sur un type de document donné, il serait dommage de les traiter à égalité dans le vote.
 
-La plupart des modèles HTR produisent, en plus de la transcription, un **score de confiance** pour chaque caractère ou chaque token — typiquement la probabilité softmax de la prédiction. Ces scores peuvent servir à pondérer le vote :
+La plupart des modèles HTR produisent, en plus de la transcription, un **score de confiance** pour chaque caractère ou chaque token : typiquement la probabilité softmax de la prédiction. Ces scores peuvent servir à pondérer le vote :
 
 ```
 Transcription A, "rois", confiance = 0.92
@@ -479,7 +479,7 @@ Vote pondéré pour *rois* : $0.92 + 0.88 = 1.80$
 Vote pondéré pour *rous* : $0.61$  
 → On retient *rois* avec une confiance agrégée de $1.80 / (1.80 + 0.61) \approx 0.75$.
 
-Ce score de confiance agrégé peut être propagé dans le JSON de sortie comme indicateur de fiabilité de la transcription — information précieuse pour le module NLP qui décidera quelles lignes méritent une révision prioritaire.
+Ce score de confiance agrégé peut être propagé dans le JSON de sortie comme indicateur de fiabilité de la transcription : information précieuse pour le module NLP qui décidera quelles lignes méritent une révision prioritaire.
 
 ### 6.5 Intégration des transcriptions humaines comme signal de supervision
 
@@ -490,7 +490,7 @@ Dans le pipeline final, on peut :
 - Les intégrer dans le vote pondéré avec un poids élevé (par exemple, 3 fois le poids d'une transcription automatique).
 - S'en servir comme référence pour calibrer les scores de confiance des modèles automatiques.
 
-Cette intégration fait le lien entre l'activité de transcription manuelle du TP et l'usage des données en entraînement — ce n'est pas un hasard si le cours commence par une heure de transcription à la main.
+Cette intégration fait le lien entre l'activité de transcription manuelle du TP et l'usage des données en entraînement : ce n'est pas un hasard si le cours commence par une heure de transcription à la main.
 
 ---
 
@@ -518,7 +518,7 @@ Le module NLP recevra un dataset de transcriptions avec les caractéristiques su
 - Le dataset contient des métadonnées par page : siècle estimé, type de document, qualité de numérisation.
 - Un flag `needs_review` signale les lignes où la confiance est inférieure à un seuil défini.
 
-Le module NLP pourra alors travailler à la normalisation orthographique, au développement des abréviations restantes, et à la correction contextuelle — en sachant exactement quelles parties de la transcription sont fiables et lesquelles sont incertaines.
+Le module NLP pourra alors travailler à la normalisation orthographique, au développement des abréviations restantes, et à la correction contextuelle : en sachant exactement quelles parties de la transcription sont fiables et lesquelles sont incertaines.
 
 ---
 
@@ -526,41 +526,41 @@ Le module NLP pourra alors travailler à la normalisation orthographique, au dé
 
 ### Métriques et évaluation en HTR
 
-- **Romero, V., Toselli, A. H., Vidal, E.** (2012). *Multimodal Interactive Handwritten Text Transcription*. World Scientific. — Définition rigoureuse du CER et du WER dans le contexte HTR, avec discussion des cas limites.
+- **Romero, V., Toselli, A. H., Vidal, E.** (2012). *Multimodal Interactive Handwritten Text Transcription*. World Scientific. : Définition rigoureuse du CER et du WER dans le contexte HTR, avec discussion des cas limites.
 
-- **Levenshtein, V. I.** (1966). *Binary codes capable of correcting deletions, insertions, and reversals*. Soviet Physics Doklady, 10(8), 707–710. — L'article fondateur de la distance d'édition qui sous-tend le calcul du CER.
+- **Levenshtein, V. I.** (1966). *Binary codes capable of correcting deletions, insertions, and reversals*. Soviet Physics Doklady, 10(8), 707–710. : L'article fondateur de la distance d'édition qui sous-tend le calcul du CER.
 
-- **Papineni, K., Roukos, S., Ward, T., Zhu, W.-J.** (2002). *BLEU: A Method for Automatic Evaluation of Machine Translation*. ACL 2002, 311–318. — L'article original du score BLEU, pour comprendre ses fondements avant de l'adapter à l'HTR.
+- **Papineni, K., Roukos, S., Ward, T., Zhu, W.-J.** (2002). *BLEU: A Method for Automatic Evaluation of Machine Translation*. ACL 2002, 311–318. : L'article original du score BLEU, pour comprendre ses fondements avant de l'adapter à l'HTR.
 
 ### Apprentissage supervisé et transfer learning
 
-- **Goodfellow, I., Bengio, Y., Courville, A.** (2016). *Deep Learning*. MIT Press. Chapitres 5 (Machine Learning Basics) et 7 (Regularization). — Référence générale sur les fondements de l'apprentissage supervisé.
+- **Goodfellow, I., Bengio, Y., Courville, A.** (2016). *Deep Learning*. MIT Press. Chapitres 5 (Machine Learning Basics) et 7 (Regularization). : Référence générale sur les fondements de l'apprentissage supervisé.
 
-- **Pan, S. J., Yang, Q.** (2010). *A Survey on Transfer Learning*. IEEE Transactions on Knowledge and Data Engineering, 22(10), 1345–1359. — Revue systématique des approches de transfert d'apprentissage.
+- **Pan, S. J., Yang, Q.** (2010). *A Survey on Transfer Learning*. IEEE Transactions on Knowledge and Data Engineering, 22(10), 1345–1359. : Revue systématique des approches de transfert d'apprentissage.
 
-- **Howard, J., Ruder, S.** (2018). *Universal Language Model Fine-tuning for Text Classification*. ACL 2018. — Formalisation des pratiques de fine-tuning, applicables aux modèles HTR.
+- **Howard, J., Ruder, S.** (2018). *Universal Language Model Fine-tuning for Text Classification*. ACL 2018. : Formalisation des pratiques de fine-tuning, applicables aux modèles HTR.
 
 ### Annotation, accord inter-annotateurs et vérité terrain
 
-- **Artstein, R., Poesio, M.** (2008). *Inter-Coder Agreement for Computational Linguistics*. Computational Linguistics, 34(4), 555–596. — Revue complète des mesures d'accord inter-annotateurs (kappa de Cohen, alpha de Krippendorff…).
+- **Artstein, R., Poesio, M.** (2008). *Inter-Coder Agreement for Computational Linguistics*. Computational Linguistics, 34(4), 555–596. : Revue complète des mesures d'accord inter-annotateurs (kappa de Cohen, alpha de Krippendorff…).
 
-- **Snow, R., O'Connor, B., Jurafsky, D., Ng, A. Y.** (2008). *Cheap and Fast — But is it Good? Evaluating Non-Expert Annotations for Natural Language Tasks*. EMNLP 2008. — Sur le crowdsourcing comme alternative aux annotations expertes.
+- **Snow, R., O'Connor, B., Jurafsky, D., Ng, A. Y.** (2008). *Cheap and Fast : But is it Good? Evaluating Non-Expert Annotations for Natural Language Tasks*. EMNLP 2008. : Sur le crowdsourcing comme alternative aux annotations expertes.
 
-- **Sabou, M. et al.** (2014). *Corpus Annotation through Crowdsourcing: Towards Best Practice Guidelines*. LREC 2014. — Meilleures pratiques pour la collecte d'annotations multiples et le calcul de consensus.
+- **Sabou, M. et al.** (2014). *Corpus Annotation through Crowdsourcing: Towards Best Practice Guidelines*. LREC 2014. : Meilleures pratiques pour la collecte d'annotations multiples et le calcul de consensus.
 
 ### Méthodes d'ensemble et pooling
 
-- **Dietterich, T. G.** (2000). *Ensemble Methods in Machine Learning*. LNCS 1857, 1–15. Springer. — Introduction aux méthodes d'ensemble (bagging, boosting, stacking) et aux principes théoriques qui les sous-tendent.
+- **Dietterich, T. G.** (2000). *Ensemble Methods in Machine Learning*. LNCS 1857, 1–15. Springer. : Introduction aux méthodes d'ensemble (bagging, boosting, stacking) et aux principes théoriques qui les sous-tendent.
 
-- **Surowiecki, J.** (2004). *The Wisdom of Crowds*. Doubleday. — Accessible. Sur les conditions dans lesquelles l'agrégation d'opinions indépendantes surpasse l'expert individuel. Donne l'intuition derrière le crowdsourcing et les méthodes d'ensemble.
+- **Surowiecki, J.** (2004). *The Wisdom of Crowds*. Doubleday. : Accessible. Sur les conditions dans lesquelles l'agrégation d'opinions indépendantes surpasse l'expert individuel. Donne l'intuition derrière le crowdsourcing et les méthodes d'ensemble.
 
 ### HTR et datasets médiévaux
 
-- **Kiessling, B., Stökl Ben Ezra, D., Miller, M. T.** (2019). *BADAM: A Public Dataset for Baseline Detection in Arabic-script Manuscripts*. Document Analysis and Recognition Workshop (GREC). — Sur la segmentation de lignes comme étape préalable à l'HTR, par les développeurs de Kraken.
+- **Kiessling, B., Stökl Ben Ezra, D., Miller, M. T.** (2019). *BADAM: A Public Dataset for Baseline Detection in Arabic-script Manuscripts*. Document Analysis and Recognition Workshop (GREC). : Sur la segmentation de lignes comme étape préalable à l'HTR, par les développeurs de Kraken.
 
-- **Pinche, A., Camps, J.-B., Clérice, T.** (2022). *HTR-United, Mutualisons la vérité de terrain !* Billet de blog CREMMA. [hal-03693079] — Présentation du projet HTR-United et des enjeux de partage des données d'entraînement pour les manuscrits anciens.
+- **Pinche, A., Camps, J.-B., Clérice, T.** (2022). *HTR-United, Mutualisons la vérité de terrain !* Billet de blog CREMMA. [hal-03693079] : Présentation du projet HTR-United et des enjeux de partage des données d'entraînement pour les manuscrits anciens.
 
-- **Camps, J.-B., Fischer, F., Jänicke, S., Schöch, C., Viehhauser, G.** (2021). *From analogue to digital philology: old manuscripts, new approaches*. Digital Humanities Quarterly, 15(1). — Panorama des enjeux de la philologie numérique, avec une perspective sur les manuscrits médiévaux.
+- **Camps, J.-B., Fischer, F., Jänicke, S., Schöch, C., Viehhauser, G.** (2021). *From analogue to digital philology: old manuscripts, new approaches*. Digital Humanities Quarterly, 15(1). : Panorama des enjeux de la philologie numérique, avec une perspective sur les manuscrits médiévaux.
 
 ---
 
