@@ -1,10 +1,10 @@
 ---
-updated: 2026-05-15T12:05:08.759+02:00
-edited_seconds: 1330
+updated: 2026-05-17T16:39:21.336+02:00
+edited_seconds: 1963
 ---
-# Cours 1.2 : Traduire la philologie en problème d'apprentissage automatique
+# Traduire la philologie en problème d'apprentissage automatique
 
-**Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
+- **Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
 
 notes:
 - L'objectif de ce cours est de comprendre les différentes unités d'apprentissage disponibles pour une tâche de reconnaissance d'écriture manuscrite, leurs avantages et inconvénients.
@@ -13,8 +13,6 @@ notes:
 ## 1. La structure d'un problème d'apprentissage supervisé
 --
 ### 1.1 Quel est l'input et l'output dans un problème de HTR ?
-
-> *Définir un problème, c'est déjà le résoudre à moitié. Le définir mal, c'est s'assurer de ne jamais le résoudre du tout.*
 
 notes:
 **L'entrée (*input* ou *x*)**
@@ -59,7 +57,11 @@ Pour la reconnaissance d'images naturelles (chats, chiens, chaises), la notion d
 
 ---
 ## 2. Le choix de la granularité : quelle est l'unité d'apprentissage ?
-Première décision architecturale du projet: ==La granularité==. La hiérarchie naturelle d'un manuscrit est la suivante :
+
+notes:
+Première décision architecturale du projet: ==La granularité==. La hiérarchie naturelle d'un manuscrit est la suivante
+
+--
 - **Document**: Ensemble de pages
 + **Page** : L'unité physique ou numérisée complète, contenant un ou plusieurs blocs de texte.
 + **Bloc** (ou **région** de texte) : Un ensemble de lignes formant une unité logique ou physique sur la page (par exemple, un paragraphe, une colonne, une annotation marginale).
@@ -67,7 +69,7 @@ Première décision architecturale du projet: ==La granularité==. La hiérarchi
 + **Mot** : Une séquence de caractères séparée par des espaces ou des signes de ponctuation.
 + **Caractère ou graphème** : L'unité alphabétique ou typographique de base (lettre, chiffre, signe de ponctuation). C'est l'unité fondamentale que les modèles HTR tentent de reconnaître.
 	+ **Glyphe** : La forme graphique concrète d'un caractère (par exemple, la façon dont un 'a' est tracé sur un manuscrit). Un même **caractère** (l'unité abstraite) peut avoir plusieurs glyphes.
-- **Trait**: Mouvement continue entre deux levés de plume
++ **Trait**: Mouvement continue entre deux levés de plume
 notes:
 À chaque niveau correspond une famille d'approches, avec ses avantages et ses contraintes.
 - Les Glyphes sont adaptés à des CNN, mais modèles séquentiels nécessaires pour les mots
@@ -79,6 +81,7 @@ https://medium.com/apache-mxnet/handwriting-ocr-line-segmentation-with-gluon-7af
 --
 ### 2.1 Le niveau du caractère
 **Approche classique de l'OCR** : segmenter en caractères, classer chaque caractère selon un alphabet prédéfini (classification multi-classe)
+
 **Pourquoi cela ne fonctionne pas** :
 - Segmentation impossible : lettres se touchent, ligatures, pas de frontière physique
 - Ambiguïté contextuelle : un jambage vertical isolé peut être *i*, *n*, *m*, *u* ou partie de *r*
@@ -106,12 +109,12 @@ L'approche classique de l'OCR (Optical Character Recognition) pour les documents
 --
 ### 2.2 Le niveau du mot
 Une unité intermédiaire: segmenter l'image en images de mots, et prédire le mot pour chaque image.
-**Avantages**
-- Unité linguistiquement signifiante: lexiques médiévaux peuvent aider à la correction
-- Plus petit qu'une phrase entière, réduit les besoin en mémoire pendant l'inférence.
-**Difficultés** :
-+ Segmentation en mots peu fiable (espaces irréguliers, mots agglutinés), abbreviations présentes
-+ Vocabulaire ouvert : l'ancien français sans norme orthographique produit un nombre potentiellement infini de formes
+- **Avantages**
+	- Unité linguistiquement signifiante: lexiques médiévaux peuvent aider à la correction
+	- Plus petit qu'une phrase entière, réduit les besoin en mémoire pendant l'inférence.
+- **Difficultés** :
+	+ Segmentation en mots peu fiable (espaces irréguliers, mots agglutinés), abbreviations présentes
+	+ Vocabulaire ouvert : l'ancien français sans norme orthographique produit un nombre potentiellement infini de formes
 
 > [!tldr]
 > Le niveau du mot est une option théorique rarement implémentée en pratique. Il est généralement abandonné au profit du niveau de la ligne.
@@ -199,7 +202,7 @@ Ces tâches seront traitées avec DINO et CLIP en Jour 3.
 --
 ### 3.1 La vérité terrain en apprentissage supervisé classique
 
-![[Cours_1_2_Philologie_vers_ML-1778770143695.png]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_2_Philologie_vers_ML-1778770143695.png]]
 
 notes:
 - Gold standard - vérité terrain (ground truth): réponse correcte, unique, fournie par un expert
@@ -212,7 +215,7 @@ Cette unicité de la vérité terrain est une **hypothèse de travail, rarement 
 --
 ### 3.2 Pourquoi la vérité terrain est problématique ici
 
-![[Cours_1_2_Philologie_vers_ML-1778770860688.png]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_2_Philologie_vers_ML-1778770860688.png]]
 
 
 notes:
@@ -234,24 +237,42 @@ notes:
 	- peut paraître faible mais 3 à 8 caractères sur 100 sachant qu'il y a moins de 100 caractères en une ligne veut dire plus d'une erreur par ligne.
 - Les études empiriques menées dans des projets collaboratifs (Transkribus, eScriptorium, Wikisource) mesurent systématiquement ce que l'on appelle le **taux d'accord inter-annotateurs** (*inter-annotator agreement* ou IAA). Pour les manuscrits médiévaux difficiles, ce taux descend à 92–97% au niveau du caractère : ce qui peut sembler élevé, mais représente une divergence de 3 à 8 caractères sur cent, soit plusieurs erreurs par ligne.
 --
-### 3.2.b Mesurer l’accord entre annotateurs : Kappa de Cohen et Alpha de Krippendorff
-
-- **Kappa de Cohen** (pour 2 annotateurs)  
-  $$\kappa = \frac{P_o - P_e}{1 - P_e}$$  
+### 3.2.b Mesurer l’accord entre annotateurs - *Kappa de Cohen* et *Alpha de Krippendorff*
+- **Kappa de Cohen** (pour 2 annotateurs) $$\kappa = \frac{P_o - P_e}{1 - P_e}$$  
   - $P_o$ = proportion d’accord observé  
   - $P_e$ = proportion d’accord attendu par hasard  
-  - $\kappa=1$ : accord parfait ; $\kappa=0$ : accord aléatoire ; $\kappa<0$ : désaccord systématique
+	  - $\kappa=1$ : accord parfait ; 
+	  - $\kappa=0$ : accord aléatoire ; 
+	  - $\kappa$ inférieur à 0 : désaccord systématique
 
-- **Alpha de Krippendorff** (généralise à plus de 2 annotateurs, variables nominales/ordinales)  
-  - Utilisé en HTR pour évaluer la fiabilité des transcriptions multiples.
+--
+- **Alpha de Krippendorff** (généralise à plus de 2 annotateurs, variables nominales/ordinales) $$α=1−\frac{De}{​Do}​​$$
 
-> **Seuils usuels** : $\kappa > 0.8$ = excellent accord ; $0.6-0.8$ = bon ; $<0.6$ = discutable.
+- $D_o$ est le désaccord observé
+- $D_e$ est le désaccord attendu au hasard.
+	- $\alpha = 1$ : Accord parfait.
+	- $\alpha = 0$ : Accord équivalent au hasard.
+	- $\alpha$ inférieur à 0 : Accord inférieur au hasard (indique une divergence systématique).
+
+```python
+from krippendorff_alpha import krippendorff_alpha
+alpha = krippendorff.alpha(reliability_data=data, level_of_measurement='nominal', bootstrap=1000, ci=0.95)
+```
 
 notes:
-Les projets collaboratifs (Transkribus, eScriptorium) calculent systématiquement l’accord inter-annotateurs. Un faible Kappa indique des règles d’annotation floues ou un manuscrit très ambigu. Cela aide à décider si on peut utiliser ces données comme vérité terrain.
+1. **Déterminer l'échelle de mesure** : Le choix de la fonction de différence ($\delta$) dépend du type de données :
+    - **Nominal** : Seule la concordance exacte compte (désaccord binaire).
+    - **Ordinal/Interval/Ratio** : La distance entre les catégories est pondérée (ex: un écart de 1 point compte moins qu'un écart de 2 points).
 
 --
 ### 3.3 Ce que cela implique pour la conception du dataset
+- **Première implication** : plusieurs annotations valent mieux qu'une seule.
+	- Crowdsourcing (Zooniverse, FromThePage, Transcriptions HumaNum) : nombreux contributeurs → consensus
++ **Deuxième implication** : encoder l'incertitude dans la transcription.
++ **Troisième implication** : métriques tenant compte de la variabilité (évaluation multi‑références).
+
+notes:  
+Un modèle évalué contre une seule référence serait injustement pénalisé pour des choix différents mais valides. L'évaluation honnête compare la prédiction à plusieurs références et retient le meilleur score ou la moyenne.
 
 **Première implication : plusieurs annotations valent mieux qu'une seule.**
 Si une seule personne annote chaque ligne, les erreurs et les choix idiosyncratiques de cet annotateur contaminent tout le dataset. Il est préférable d'avoir plusieurs annotateurs indépendants, même moins experts, dont on combine les transcriptions.
@@ -284,7 +305,36 @@ En format JSON pour notre pipeline :
 Un modèle évalué contre une seule transcription de référence sera pénalisé pour des erreurs qui ne sont pas des erreurs : des choix différents mais également valides. Une évaluation plus honnête compare le modèle contre *plusieurs* transcriptions de référence et retient le meilleur score, ou calcule une moyenne.
 
 --
-### 3.4 Niveaux de fidélité de la transcription et leurs vérités terrain respectives
+### 3.3.b Comment encoder l'incertitude 
+
+```xml
+<choice>
+  <sic>o</sic>
+  <corr cert="medium">e</corr>
+</choice>
+```
+
+```json
+{
+  "line_id": "l047",
+  "transcription": "En cel tems...",
+  "confidence": 0.84,
+  "uncertain_chars": [{"position": 7, "candidates": ["e","o"], "probabilities": [0.72,0.28]}]
+}
+```
+
+--
+### 3.4 Niveaux de fidélité de la transcription
+
+|Niveau|Description|Reproductibilité|Subjectivité|
+|---|---|---|---|
+|**Diplomatique stricte**|Transcrit abréviations telles quelles|Élevée|Faible|
+|**Semi-diplomatique** (notre choix)|Développe abréviations claires, conserve orthographe|Moyenne|Modérée|
+|**Normalisée**|Orthographe normalisée, abréviations développées|Faible|Élevée|
+
+> [!tldr] **Pour notre projet** : transcription **semi-diplomatique** – documentée dans le data contract livré au module NLP.
+
+notes:
 
 Un point crucial, souvent source de confusion dans les projets HTR pour les humanités : **la vérité terrain dépend du niveau de fidélité choisi**.
 
@@ -299,21 +349,22 @@ On développe les abréviations les plus claires (celles dont le développement 
 **Transcription normalisée**
 On normalise l'orthographe, on développe toutes les abréviations, on corrige les erreurs manifestes du scribe. Cette transcription est plus lisible mais plus subjective. Elle est utile comme cible pour le module NLP, moins comme vérité terrain pour l'HTR.
 
-> **Pour notre projet :** nous visons une **transcription semi-diplomatique** comme vérité terrain : développement des abréviations claires, conservation de l'orthographe médiévale, signalement des incertitudes. Ce choix sera documenté dans le data contract livré au module NLP.
+> [!tldr] **Pour notre projet :** nous visons une **transcription semi-diplomatique** comme vérité terrain : développement des abréviations claires, conservation de l'orthographe médiévale, signalement des incertitudes. Ce choix sera documenté dans le data contract livré au module NLP.
 
 ---
 ## 4. Les métriques d'évaluation
 
+notes:
 Choisir une métrique, c'est définir ce qu'on entend par « le modèle fonctionne bien ». Un mauvais choix de métrique conduit à optimiser la mauvaise quantité. Dans ce domaine comme dans beaucoup d'autres en ML, les métriques ne sont pas neutres : elles reflètent des jugements sur ce qui compte.
 
 --
 ### 4.1.1 Le Character Error Rate (CER)
 Le CER est **la métrique standard de toute transcription** (ou traduction). Il mesure le taux d'erreur au niveau du caractère. 
 II est calculé à partir de la **distance de Levenshtein** entre la transcription prédite et la transcription de référence: le nombre minimal d'opérations élémentaires nécessaires pour transformer l'une en l'autre.
-- $S$ -**Substitution** : remplacer un caractère par un autre (*a* → *o*).
+- $S$ - **Substitution** : remplacer un caractère par un autre (*a* → *o*).
 - $I$ - **Insertion** : ajouter un caractère absent de la référence.
 - $D$ - **Suppression** (ou délétion) : supprimer un caractère présent dans la référence.
-- $N$ = nombre total de caractères dans la **référence****
+- $N$ = nombre total de caractères dans la **référence**
 $$\text{CER \% } = \frac{S + I + D}{N}$$
 
 
@@ -326,10 +377,18 @@ notes:
 
 L'exactitude (*accuracy*) serait le complément du taux d'erreur : $1 - \text{CER}$. On pourrait utiliser cette mesure à la place. En pratique, le CER est préféré parce qu'il est *additif* sur plusieurs lignes : on peut sommer les $(S + I + D)$ et les $N$ de toutes les lignes d'un document, et calculer un CER global qui reflète fidèlement la performance sur l'ensemble du document.
 
----
-### 4.1 .2 - CER en pratique
-![[Cours_1_2_Philologie_vers_ML-1778613285756.jpg]]
+--
+<!-- slide template="[[tpl-img-left-lg]]" -->
 
+::: title
+### 4.1.2 - CER en pratique
+:::
+
+::: image
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_2_Philologie_vers_ML-1778613285756.jpg|445]]
+:::
+
+==HTR de Deep Seek==
 ```
 manuscripts
 de Voltaire
@@ -348,11 +407,24 @@ Jan. m. 1° de la République.
 
 $$\text{CER \% } = \frac{S + I + D}{129}$$
 --
-### 4.2 Le Word Error Rate (WER)
+### 4.2.1 Le Word Error Rate (WER)
+Même formule au niveau des mots : $$\text{WER} = \frac{S_w + I_w + D_w}{N_w}$$
+
+- **Exemple** :  
+	- Référence : `"li rois Artus regnoit"` (4 mots)  
+	- Prédiction : `"li rous Artus regnoit"`  → 1 substitution → WER = 25%  
+	- CER = 1/20 = 5%
+- **Pourquoi le WER est plus sévère** :
+	- Mots courts (_li, la, de_) : une substitution d'un caractère change tout le mot
+    - Orthographe variable : _rei_ vs _roi_ compte comme erreur mot entier
+
+notes:  
+Bonnes pratiques : normaliser (minuscules, suppression ponctuation). Compléter par CERberus qui pondère les erreurs (é vs e moins grave que e vs 0). [https://github.com/WHaverals/CERberus](https://github.com/WHaverals/CERberus)
+
 
 Le WER applique exactement la même formule que le CER, mais à l'échelle des **mots** plutôt que des caractères.
 
-$$\text{WER} = \frac{S_w + I_w + D_w}{N_w}$$
+
 
 où les indices $w$ indiquent que les opérations sont comptées au niveau du mot, et $N_w$ est le nombre de mots dans la référence.
 
@@ -382,10 +454,18 @@ $$\text{CER} = \frac{1}{20} = 5\%$$
 - Compléter par des métriques alternatives comme le **bWER** (ignorant l’ordre des mots) ou le **CERberus**, qui pondère les erreurs selon leur impact (ex.  `é` vs `e` moins grave que `e` vs `0`).
 - https://github.com/WHaverals/CERberus/tree/main
 
----
-### 4.2 .2 - CER en pratique
-![[Cours_1_2_Philologie_vers_ML-1778613285756.jpg]]
+--
+<!-- slide template="[[tpl-img-left-lg]]" -->
 
+::: title
+### 4.2.2 - WER en pratique
+:::
+
+::: image
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_2_Philologie_vers_ML-1778613285756.jpg|445]]
+:::
+
+==HTR de Deep Seek==
 ```
 manuscripts
 de Voltaire
@@ -403,20 +483,21 @@ Jan. m. 1° de la République.
 ```
 
 --
-### 4.2.b Orthographe historique : pas de « faute » avant le XVIIIe siècle
-
-Avant la seconde moitié du XVIIIe siècle, **il n’existe aucune autorité normative** (Académie française, dictionnaire unifié) imposant une orthographe unique.  
-- Les formes *roy / roi / rey / roix* coexistent légitimement.  
-- Un scribe normand écrit différemment d’un scribe picard, sans que l’un ou l’autre soit « faux ».  
-- Ce que l’on appellerait aujourd’hui une « faute » (ex : *j’ai deu* pour *j’ai dû*) est simplement une graphie ancienne.
-
-> **Conséquence pour l’HTR** : ne jamais corriger l’orthographe d’un manuscrit médiéval sous prétexte qu’elle est « erronée ». La transcription doit être **fidèle** à la graphie du scribe. La normalisation viendra après, en NLP, avec un dictionnaire historique.
-
-notes:
-C’est un point souvent mal compris par les informaticiens. Le CER calculé contre une référence « corrigée » pénaliserait injustement le modèle. Il faut donc que la vérité terrain utilise la même convention orthographique que l’original – d’où l’importance de la transcription diplomatique ou semi-diplomatique.
-
---
 ### 4.3 Les limites des métriques dans le contexte médiéval
+
+Avant la seconde moitié du XVIIIe siècle, **aucune autorité normative** n'impose une orthographe unique.
+
+- _roy / roi / rey / roix_ coexistent légitimement
+    
+- Un scribe normand écrit différemment d'un scribe picard – aucun des deux n'a « faux »
+    
+- Ce qu'on appellerait une faute aujourd'hui (ex: _j'ai deu_) est simplement une graphie ancienne
+    
+
+> [!tldr] **Conséquence pour l'HTR** : ne jamais corriger l'orthographe d'un manuscrit médiéval. La transcription doit être fidèle à la graphie du scribe. La normalisation viendra en NLP, avec un dictionnaire historique.
+
+notes:  
+Le CER calculé contre une référence « corrigée » pénaliserait injustement le modèle. La vérité terrain doit utiliser la même convention orthographique que l'original – d'où l'importance de la transcription diplomatique ou semi-diplomatique.
 Même un CER bien conçu présente des limites structurelles importantes dans notre contexte.
 
 **Le problème de l'orthographe variable**
@@ -439,29 +520,15 @@ En ancien français, certains mots sont souvent agglutinés sans espace dans les
 Le CER agrège tous les caractères de toutes les lignes. Une ligne de 80 caractères contribue 8 fois plus qu'une ligne de 10 caractères. Les lignes courtes (lettrines isolées, titres de chapitres) ont souvent un CER élevé par nature (peu de contexte), mais leur contribution au CER global est faible. Il faut examiner les distributions d'erreur par type de ligne, pas seulement le CER global.
 
 --
-### 4.3.b Multilinguisme : latin, grec, vernaculaire mêlés
+### 4.4  Éléments non textuels : rubriques, lettrines, notes marginales, illustrations
+- **Rubriques** (rouge) : seuillage HSV (teinte) pour isoler le rouge
+- **Lettrines** : grandes initiales ornées – détecter comme région spéciale, transcrire la lettre + métadonnées
+- **Notes marginales** : position (haute, basse, latérale) ; orientation parfois à 90° → détection de ligne non horizontale (skew local)
+- **Illustrations** : segmenter (boîte englobante) puis décrire avec modèle vision‑langage (CLIP, LLaVA)
 
-Dans les manuscrits médiévaux, plusieurs langues cohabitent fréquemment sur la même page, voire dans la même ligne.
-
-**Exemples** :  
-- Textes religieux : latin + gloses en ancien français  
-- Traités scientifiques : latin + grec translittéré ou non  
-- Chartes : latin + quelques formules en français  
-- Registres : mixte selon la colonne
-
-**Stratégies pour l’HTR** :  
-- Détecter la **langue dominante par région** (bloc ou ligne) avant la transcription.  
-- Utiliser des modèles de langue spécifiques (latin, vieux français, moyen français) en post-traitement.  
-- Pour les caractères grecs : conserver les glyphes ou translittérer selon une norme (ISO 843).
-
-> Dans le pipeline, on peut ajouter une étape de classification de langue par région (avec un petit CNN ou DINO) avant d’appliquer le modèle HTR approprié.
+> [!tldr] La pipeline de segmentation de layout (SAM) doit distinguer ces régions et les étiqueter (texte normal, rubrique, lettrine, note, illustration).
 
 notes:
-Le multilinguisme est une difficulté supplémentaire. Les modèles pré-entraînés (TrOCR) sont principalement entraînés sur du latin moderne / anglais, donc peu robustes. L’idéal est d’avoir des modèles spécialisés par langue (via HTR-United).
-
---
-### 4.4  Éléments non textuels : rubriques, lettrines, notes marginales, illustrations
-
 - **Rubriques** (titres en rouge) : utilisent un canal couleur distinct. En computer vision, segmentation par seuillage HSV (teinte) pour isoler le rouge.
 - **Lettrines** : grandes initiales souvent ornées. Leur forme ne correspond pas à la police standard. Il faut les détecter comme région spéciale et les transcrire comme la lettre correspondante (parfois avec métadonnées).
 - **Notes marginales** :
@@ -471,13 +538,11 @@ Le multilinguisme est une difficulté supplémentaire. Les modèles pré-entraî
 
 > Le pipeline de segmentation de layout (SAM) doit distinguer ces régions et les étiqueter (texte normal, rubrique, lettrine, note, illustration). Chaque type aura un traitement différent.
 
-notes:
 Les outils comme Transkribus ou eScriptorium intègrent ces fonctionnalités. Pour les notes marginales à 90°, on peut tourner la région avant de passer le modèle HTR. La classification par couleur (rouge) est très fiable pour les rubriques.
 
 
 --
 ### 4.5 Objectifs de précision pour le projet
-Les valeurs suivantes sont des **références de la communauté HTR**. Elles correspondent aux performances observées sur des manuscrits médiévaux européens dans des projets récents (Transkribus, CREMMA, eScriptorium).
 
 | Niveau                                    | CER cible | Interprétation                                 |
 | ----------------------------------------- | --------- | ---------------------------------------------- |
@@ -488,14 +553,26 @@ Les valeurs suivantes sont des **références de la communauté HTR**. Elles cor
 | Après correction NLP                      | 3–7%      | Objectif du module NLP                         |
 | Expert humain (inter-annotateur)          | 3–8%      | Plafond indicatif de la performance humaine    |
 
-> **Un CER de 12% signifie concrètement** : sur une ligne de 60 caractères, environ 7 caractères sont incorrects. Le texte reste généralement lisible par un lecteur humain qui connaît le domaine, mais nécessite une révision pour une utilisation académique rigoureuse.
+> [!tldr]  **Un CER de 12% signifie concrètement** : sur une ligne de 60 caractères, environ 7 caractères sont incorrects. Le texte reste généralement lisible par un lecteur humain qui connaît le domaine, mais nécessite une révision pour une utilisation académique rigoureuse.
+
+
+notes:
+Les valeurs suivantes sont des **références de la communauté HTR**. Elles correspondent aux performances observées sur des manuscrits médiévaux européens dans des projets récents (Transkribus, CREMMA, eScriptorium).
 
 ---
 ## 5. Le problème de l'annotation rare : stratégies pour constituer un dataset
 
 --
 ### 5.1 L'apprentissage par transfert comme point de départ
+**Contrainte** : impossibilité de constituer un dataset de plusieurs milliers de lignes annotées par des experts.
+**Solution** : transfert learning
+- Modèle pré-entraîné sur des millions de lignes manuscrites modernes (ex: TrOCR sur IAM)
+- Fine-tuning sur quelques centaines à milliers de lignes médiévales annotées
 
+> [!tldr]  Avec 500–2000 lignes pour un corpus homogène, résultats acceptables.
+
+notes:  
+TrOCR a appris des représentations génériques de l'écriture manuscrite. Le fine-tuning ajuste ses paramètres au sous-domaine médiéval.
 La contrainte fondamentale du projet est la rareté des données annotées. Il est hors de portée de constituer, dans le temps du cours, un dataset de plusieurs milliers de lignes annotées par des experts.
 
 La réponse de l'état de l'art est le **transfert d'apprentissage** (*transfer learning*) : utiliser un modèle pré-entraîné sur une large quantité de données d'une tâche voisine, et le spécialiser (*fine-tuner*) sur les données spécifiques à notre problème.
@@ -508,6 +585,17 @@ La quantité de données nécessaires pour le fine-tuning est **bien inférieure
 
 --
 ### 5.2 La data augmentation pour l'HTR
+
+**Géométriques** : rotations (±2°), déformation élastique, modification d'aspect ratio
+
+**Photométriques** : variations de luminosité/contraste, bruit gaussien, taches d'encre, simulation de _show-through_ (transparence)
+
+**De style** (avancé) : GANs, modèles de diffusion – hors périmètre
+
+> [!tldr] **Règle empirique** : l'augmentation améliore la robustesse mais ne remplace pas les données réelles.
+
+notes:  
+Elle est particulièrement efficace pour les transformations que le modèle rencontrera réellement en production.
 
 La data augmentation consiste à générer des variantes synthétiques des données existantes pour augmenter artificiellement la taille du dataset et la robustesse du modèle.
 
@@ -531,7 +619,14 @@ Une règle empirique : la data augmentation améliore la robustesse mais ne remp
 
 --
 ### 5.3 L'utilisation de datasets existants : HTR-United et CREMMA
+- **HTR-United** : catalogue de datasets HTR sous licences ouvertes, incluant vieux et moyen français
+     [https://htrunited.github.io](https://htrunited.github.io/), 
+- **CREMMA Médiéval** : corpus spécifique pour l'ancien et moyen français, format PAGE XML, compatible Kraken et eScriptorium
+    [https://cremma.hypotheses.org/](https://cremma.hypotheses.org/)
 
+> [!tldr] Ces datasets peuvent servir d'entraînement de base ou de point de départ pour un fine-tuning supplémentaire.
+
+notes:
 La voie la plus rapide pour constituer un dataset d'entraînement solide est de partir des datasets existants, ouverts, annotés par des experts. Comme détaillé dans l'Annexe du plan de cours général, les ressources clés sont :
 
 - **HTR-United** : catalogue de datasets HTR sous licences ouvertes, incluant plusieurs corpus de vieux et moyen français médiéval.
@@ -544,6 +639,13 @@ Ces datasets peuvent être utilisés directement comme données d'entraînement,
 
 --
 ### 6.1 L'intuition
+- Les experts humains ne s'accordent pas parfaitement.  
+- Les modèles font des erreurs différentes selon leur architecture et leur entraînement.
+
+**Principe** : combiner plusieurs modèles imparfaits pour que leurs erreurs se compensent.
+
+notes:  
+On parle d'« agrégation de transcriptions » ou de « méthodes d'ensemble ». Éviter le terme "pooling" seul car ambigu.
 Revenons au constat de départ : les experts humains ne s'accordent pas parfaitement, et les modèles font des erreurs différentes selon leur architecture et leur entraînement. Un modèle entraîné sur des chartes du XIIIe siècle sera plus performant que les autres sur ce type de documents, mais moins bon sur des romans du XIVe siècle. Un autre modèle présentait le profil inverse.
 
 Au lieu de chercher un seul modèle parfait (qui n'existe pas), on peut combiner plusieurs modèles imparfaits de façon à ce que leurs erreurs se compensent partiellement. C'est le principe des **méthodes d'ensemble** (*ensemble methods*) en apprentissage automatique, appliqué ici à la transcription.
@@ -551,7 +653,7 @@ Au lieu de chercher un seul modèle parfait (qui n'existe pas), on peut combiner
 Cette idée n'est pas nouvelle en philologie non plus : l'édition critique d'un texte médiéval consiste précisément à comparer plusieurs manuscrits (les *témoins*) d'un même texte pour reconstituer la forme la plus proche de l'original : en supposant que les erreurs de copie sont distribuées de façon aléatoire entre les témoins indépendants, et qu'un passage confirmé par la majorité des témoins a plus de chances d'être correct.
 
 --
-### 6.1.a Théorème de Condorcet (1785)
+### 6.2 Théorème de Condorcet (1785)
 **Principe** : si chaque votant a une probabilité $p > 0.5$ de prendre la bonne décision (indépendamment), alors le **vote majoritaire** augmente la probabilité de la bonne décision. Plus le groupe est grand, plus cette probabilité tend vers 1.
 - **Hypothèses fortes** : indépendance des jugements, deux choix seulement, tous les votants ont la même compétence $p$.
 - En ML, cela justifie les **méthodes d’ensemble** : combiner plusieurs modèles faibles pour obtenir un modèle fort.
@@ -559,7 +661,24 @@ notes:
 Contre-exemple : si $p < 0.5$, le groupe est pire qu’un individu seul. C’est pourquoi on n’agrège pas des modèles systématiquement mauvais. Pour la transcription, on n’utilise que des modèles dont le CER est < 50% (ce qui est toujours le cas après pré-entraînement).
 
 --
-### 6.2 Le vote majoritaire
+### 6.3 Le vote majoritaire
+On dispose de nn transcriptions d'une même ligne. Pour chaque position, on retient le caractère le plus fréquent.
+
+**Exemple** (3 transcriptions) :
+
+```text
+
+1 : "li rois Artus regnoit"
+2 : "li rous Artus regnoit"
+3 : "li rois Artus regnoit"
+```
+
+Position 4 : *i* (2 voix) vs *o* (1 voix) → on retient *i*.
+
+**Limite** : nécessite un alignement préalable des séquences (Needleman‑Wunsch).
+
+notes:  
+Des insertions ou suppressions dans une transcription décalent toute la suite. L'alignement multiple de séquences est nécessaire avant le vote.
 
 La méthode la plus simple : on dispose de $n$ transcriptions d'une même ligne (produites par $n$ modèles différents, ou par $n$ annotateurs humains). Pour chaque position dans la séquence de caractères, on retient le caractère le plus fréquent.
 
@@ -576,7 +695,16 @@ Position 4 (*i* vs *o*) : vote 2 pour *i*, 1 pour *o* → on retient *i*. Résul
 **Limite du vote simple.** Les transcriptions ne sont généralement pas alignées caractère par caractère de façon triviale. Des insertions ou des suppressions dans l'une des transcriptions décalent toute la suite. Il faut d'abord **aligner** les transcriptions avant de voter.
 
 --
-### 6.1.b Sagesse des foules (wisdom of the crowd)
+### 6.4 Sagesse des foules (wisdom of the crowd)
+**Phénomène** : l'agrégation d'opinions indépendantes de nombreux individus (même non experts) peut surpasser l'expert isolé.
+**Conditions** : diversité, indépendance, décentralisation, agrégation (vote/moyenne)
+**Application HTR** :
+- Crowdsourcing de transcriptions (Zooniverse, FromThePage, https://transcrire.huma-num.fr/, Transcribe Bentham)
+- Plusieurs annotations par ligne → consensus
+
+
+notes:  
+Projet « Transcribe Bentham » : des centaines de volontaires non-paléographes produisent des transcriptions qui, agrégées, atteignent la qualité experte. L'indépendance est cruciale (pas de copie, pas de discussion).
 
 - Phénomène général : l’agrégation d’opinions indépendantes de nombreux individus (même non experts) peut surpasser l’expert isolé.
 - **Conditions** : diversité des opinions, indépendance, décentralisation, agrégation (vote/moyenne).
@@ -586,20 +714,26 @@ Position 4 (*i* vs *o*) : vote 2 pour *i*, 1 pour *o* → on retient *i*. Résul
 
 > Dans notre TP, le CER inter-annotateurs entre étudiants est la base de la « sagesse de la classe » : une transcription combinée par vote serait meilleure que la moyenne individuelle.
 
-notes:
 C’est le principe des projets comme « Transcribe Bentham » : des centaines de volontaires non-paléographes produisent des transcriptions qui, aggrégées, atteignent la qualité experte. Cependant, la condition d’indépendance est cruciale (pas de copie, pas de discussion).
 
 --
-### 6.3 L'alignement multiple de séquences
+### 6.5 Vote pondéré par la confiance
 
-L'alignement de deux séquences de caractères s'effectue avec l'algorithme de Needleman-Wunsch (ou ses variantes, notamment Smith-Waterman pour l'alignement local). C'est un algorithme de programmation dynamique classique, identique dans son principe à celui utilisé en bioinformatique pour l'alignement de séquences d'ADN.
+Tous les modèles n'ont pas la même fiabilité. On utilise les scores de confiance (probabilité softmax) pour pondérer.
 
-Pour trois transcriptions ou plus, on peut utiliser un alignement multiple progressif (aligner d'abord les deux transcriptions les plus proches, puis ajouter les suivantes) ou un algorithme dédié à l'alignement multiple de séquences courtes.
+**Exemple** :
+- Modèle A : `"rois"` (confiance 0.92)
+- Modèle B : `"rous"` (confiance 0.61)
+- Modèle C : `"rois"` (confiance 0.88)
 
-Une fois les transcriptions alignées, le vote position par position est bien défini.
+Vote pondéré pour `"rois"` : 0.92 + 0.88 = 1.80  
+Vote pondéré pour `"rous"` : 0.61  
+→ On retient `"rois"` avec une confiance agrégée ≈ 0.75.
 
---
-### 6.4 Le vote pondéré par la confiance
+> [!tldr] Ce score de confiance agrégé est propagé dans le JSON de sortie – information précieuse pour le module NLP.
+
+notes:  
+Le module NLP saura quelles lignes méritent une révision prioritaire.
 
 Tous les modèles ne sont pas également fiables. Si l'on sait a priori que le modèle A est meilleur que le modèle B sur un type de document donné, il serait dommage de les traiter à égalité dans le vote.
 
@@ -618,21 +752,34 @@ Vote pondéré pour *rous* : $0.61$
 Ce score de confiance agrégé peut être propagé dans le JSON de sortie comme indicateur de fiabilité de la transcription : information précieuse pour le module NLP qui décidera quelles lignes méritent une révision prioritaire.
 
 --
-### 6.4.b Biais systématique vs bruit aléatoire
+### 6.6 Biais systématique vs bruit aléatoire
 
-| Type d’erreur | Définition | Exemple en transcription | Correction |
-|---------------|------------|--------------------------|-------------|
-| **Biais systématique** | Erreur cohérente, répétée par un annotateur/modèle | Un annotateur lit toujours *u* pour *n* en gothique | Recalibration, pondération faible |
-| **Bruit aléatoire** | Variations incohérentes, non prédictibles | Une même lettre tantôt *c* tantôt *e* selon le contexte | Augmentation de données, consensus |
+| Type d’erreur          | Définition                                         | Exemple en transcription                                | Correction                         |
+| ---------------------- | -------------------------------------------------- | ------------------------------------------------------- | ---------------------------------- |
+| **Biais systématique** | Erreur cohérente, répétée par un annotateur/modèle | Un annotateur lit toujours *u* pour *n* en gothique     | Recalibration, pondération faible  |
+| **Bruit aléatoire**    | Variations incohérentes, non prédictibles          | Une même lettre tantôt *c* tantôt *e* selon le contexte | Augmentation de données, consensus |
 
-> Pour l’agrégation, il faut détecter et pénaliser les annotateurs biaisés, mais le bruit aléatoire se corrige par le vote majoritaire.
+> [!tldr] Pour l’agrégation, il faut détecter et pénaliser les annotateurs biaisés, mais le bruit aléatoire se corrige par le vote majoritaire.
 
 notes:
 Dans les modèles comme Dawid-Skene, on estime la matrice de confusion de chaque annotateur (biais) et on l’utilise pour pondérer. Le bruit aléatoire augmente la variance mais peut être moyenné.
 
 
 --
-### 6.4.c Modèles d’agrégation d’annotations : Dawid-Skene, GLAD, MACE
+### 6.7 Modèles d'agrégation d'annotations : Dawid-Skene, GLAD, MACE
+
+**Dawid-Skene (1979)** – Modèle probabiliste de référence
+
+- Estime simultanément la **vérité cachée** et la **compétence** de chaque annotateur (taux d'erreur par classe)
+    
+- Algorithme EM
+    
+
+**GLAD** – Étend Dawid-Skene avec un paramètre de **difficulté de l'item** (une ligne dégradée sera difficile même pour un bon annotateur)
+
+> [!tldr] Ces modèles sont utilisés en crowdsourcing et peuvent être appliqués aux transcriptions HTR pour produire une vérité terrain de meilleure qualité que le simple vote.
+
+notes:
 
 **Dawid-Skene (1979)** – Modèle probabiliste de référence  
 - Estime simultanément la **vérité cachée** et la **compétence** de chaque annotateur (taux d’erreur par classe).  
@@ -641,35 +788,24 @@ Dans les modèles comme Dawid-Skene, on estime la matrice de confusion de chaque
 **GLAD (Generative Model of Labels, Abilities, and Difficulties)** – Étend Dawid-Skene  
 - Ajoute un paramètre de **difficulté de l’item** (ex : une ligne très dégradée sera difficile même pour un bon annotateur).
 
-**MACE (Majority Agreement and Competence Estimation)** – Robuste aux annotateurs malveillants ou biaisés  
-- Modélise la probabilité que chaque annotateur suive une stratégie cohérente (biais) plutôt qu’aléatoire.
 
 > Ces modèles sont utilisés dans les plateformes de crowdsourcing (Amazon Mechanical Turk) et peuvent être appliqués aux transcriptions HTR pour produire une vérité terrain de meilleure qualité que le simple vote.
 
-notes:
-**Attention** : la description de MACE dans le document original était erronée (il n’est pas spécialisé pour les séquences temporelles). Ici, on corrige : MACE est général pour annotations catégorielles, avec détection d’annotateurs biaisés.
-
 --
-### 6.4.d Lien avec l’ensemble learning (bagging, boosting)
+### 6.8 Intégration des transcriptions humaines comme signal de supervision
+Les transcriptions manuelles produites en TP sont des **données de supervision de haute qualité**.
 
-- **Bagging** (Bootstrap Aggregating) – Réduit la variance  
-  - Entraîne plusieurs modèles sur des échantillons bootstrap de données.  
-  - Agrège par vote ou moyenne.  
-  - Exemple : Random Forest.  
-  - **Application HTR** : entraîner plusieurs TrOCR sur des sous-ensembles de lignes, puis voter.
-
-- **Boosting** – Réduit le biais  
-  - Entraîne séquentiellement des modèles faibles, chaque nouveau modèle corrige les erreurs du précédent (pondération des exemples mal classés).  
-  - Exemple : AdaBoost, Gradient Boosting.  
-  - **Application HTR** : moins courant, mais possible pour la correction de caractères spécifiques.
-
-> Dans notre pipeline, le **vote pondéré** entre plusieurs modèles HTR (TrOCR, Kraken, etc.) relève du bagging (indépendance). Le boosting pourrait être utilisé pour affiner les décisions sur les caractères ambigus.
+On peut :
+- Les utiliser comme vérité terrain pour le fine-tuning
+- Les intégrer dans le vote pondéré avec un poids élevé (ex: 3× celui d'un modèle automatique)
+- S'en servir pour calibrer les scores de confiance des modèles automatiques
 
 notes:
-Le bagging suppose que les modèles sont indépendants (erreurs non corrélées). On obtient cette indépendance en variant les architectures, les pré-entraînements, ou les augmentations de données.
 
---
-### 6.5 Intégration des transcriptions humaines comme signal de supervision
+
+> Cette intégration boucle la boucle : l'activité manuelle du début du cours alimente directement l'entraînement des modèles.
+
+
 
 Les transcriptions manuelles produites en TP (section 1.3) ne sont pas de simples exercices pédagogiques. Elles constituent une **donnée de supervision** de haute qualité : une annotation humaine est, par définition, le signal le plus fiable disponible.
 
@@ -688,18 +824,26 @@ Cette intégration fait le lien entre l'activité de transcription manuelle du T
 --
 ### 7.1 Résumé des choix fondamentaux
 
-| Dimension | Choix | Justification |
-|-----------|-------|---------------|
-| **Unité d'apprentissage** | Ligne de texte | Standard HTR, évite la segmentation en caractères, fournit assez de contexte |
-| **Type de transcription** | Semi-diplomatique | Reproductible, non normalisée, compatible avec le module NLP |
-| **Métriques principales** | CER (principal), WER (secondaire) | CER standard HTR ; WER indicatif de lisibilité |
-| **Cible de performance** | CER < 12% | Niveau opérationnel pour la recherche, atteignable avec fine-tuning |
-| **Gestion de l'ambiguïté** | Confiance par caractère + flag de révision | Propagation de l'incertitude vers le module NLP |
-| **Stratégie d'ensemble** | Vote pondéré par confiance, 2–3 modèles | Compense les erreurs spécifiques à chaque modèle |
-| **Format de sortie** | JSON + TEI P5 optionnel | Lisible par les outils des humanités numériques |
+| Dimension                  | Choix                                      | Justification                                                                |
+| -------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
+| **Unité d'apprentissage**  | Ligne de texte                             | Standard HTR, évite la segmentation en caractères, fournit assez de contexte |
+| **Type de transcription**  | Semi-diplomatique                          | Reproductible, non normalisée, compatible avec le module NLP                 |
+| **Métriques principales**  | CER (principal), WER (secondaire)          | CER standard HTR ; WER indicatif de lisibilité                               |
+| **Cible de performance**   | 12% > CER                                  | Niveau opérationnel pour la recherche, atteignable avec fine-tuning          |
+| **Gestion de l'ambiguïté** | Confiance par caractère + flag de révision | Propagation de l'incertitude vers le module NLP                              |
+| **Stratégie d'ensemble**   | Vote pondéré par confiance, 2–3 modèles    | Compense les erreurs spécifiques à chaque modèle                             |
+| **Format de sortie**       | JSON + TEI P5 optionnel                    | Lisible par les outils des humanités numériques                              |
 
 --
 ### 7.2 Ce que le module NLP recevra
+- Transcription semi-diplomatique par ligne
+- Score de confiance global + positions incertaines avec candidats
+- Métadonnées par page : siècle estimé, type de document, qualité de numérisation
+- Flag `needs_review` pour les lignes de faible confiance
+
+> [!tldr] Le module NLP pourra normaliser l'orthographe, développer les abréviations restantes, et corriger contextuellement, en sachant exactement quelles parties sont fiables.
+
+notes:
 
 Le module NLP recevra un dataset de transcriptions avec les caractéristiques suivantes :
 - Chaque ligne est transcrite en vieux ou moyen français semi-diplomatique.
@@ -754,8 +898,3 @@ Le module NLP pourra alors travailler à la normalisation orthographique, au dé
 - **Pinche, A., Camps, J.-B., Clérice, T.** (2022). *HTR-United, Mutualisons la vérité de terrain !* Billet de blog CREMMA. [hal-03693079] : Présentation du projet HTR-United et des enjeux de partage des données d'entraînement pour les manuscrits anciens.
 
 - **Camps, J.-B., Fischer, F., Jänicke, S., Schöch, C., Viehhauser, G.** (2021). *From analogue to digital philology: old manuscripts, new approaches*. Digital Humanities Quarterly, 15(1). : Panorama des enjeux de la philologie numérique, avec une perspective sur les manuscrits médiévaux.
-
----
-
-*Support de cours rédigé pour le module Computer Vision · Promotion MD5 · Mai 2026*
-*Ce document accompagne la séance 1.2 du Jour 1. Il suppose la lecture préalable du document 1.1.*
