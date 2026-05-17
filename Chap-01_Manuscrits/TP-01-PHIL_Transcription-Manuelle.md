@@ -30,20 +30,50 @@ Il est organisé en quatre étapes progressives, qui passent du travail individu
 
 Vous recevrez **trois scans distincts**, représentant trois types de documents et trois périodes différentes. Cette diversité est délibérée : elle vous exposera à la variabilité réelle des manuscrits médiévaux, qui est l'une des difficultés centrales du projet.
 
-**Document A : Charte du XIIIe siècle**
-Une charte de donation ou de vente, probablement en latin mêlé de quelques formules en vieux français. Écriture gothique textualis de chancellerie, relativement régulière. Abréviations très denses (les actes juridiques latins abrèvent massivement les formules récurrentes). Mise en page simple : une seule colonne, sans illustration, peu de notes marginales.
+**Document A : Charte du XIIIe siècle**  
+Lien : [https://gallica.bnf.fr/ark:/12148/btv1b52525332z/f13.item](https://gallica.bnf.fr/ark:/12148/btv1b52525332z/f13.item)  
 
-*Intérêt pédagogique :* la régularité de l'écriture facilite la lecture des lettres individuelles, mais la densité des abréviations impose des décisions de développement constantes. C'est un bon point d'entrée pour comprendre les systèmes d'abréviation.
+Charte de coutumes accordée par Philippe III (le Hardi) aux habitants de Nègrepelisse. Écriture gothique textualis de chancellerie, relativement régulière. Abréviations très denses (les actes juridiques latins abrèvent massivement les formules récurrentes). Mise en page simple : une seule colonne, sans illustration, peu de notes marginales.  
+
+*Intérêt pédagogique :* la régularité de l’écriture facilite la lecture des lettres individuelles, mais la densité des abréviations impose des décisions de développement constantes. C’est un bon point d’entrée pour comprendre les systèmes d’abréviation.
 
 **Document B : Extrait de roman arthurien (XIVe siècle)**
-Quelques pages d'un roman en prose en moyen français. Écriture gothique cursive ou bâtarde, plus personnelle et plus rapide que la textualis de chancellerie. Mise en page à une colonne avec une lettrine ornée en début de section et quelques rubriques. Texte narratif : moins d'abréviations que la charte, mais une langue moins prévisible.
+Lien: https://gallica.bnf.fr/ark:/12148/btv1b550063539/f10.item
+Roman arthurien en prose en moyen français, copié à Milan vers 1370-1380. Écriture gothique cursive italienne (bâtarde), plus personnelle et plus rapide que la textualis de chancellerie. Mise en page à une colonne, lettrines ornées à motifs végétaux en tête de sections, et 110 dessins marginaux à la plume rehaussés de lavis. Texte narratif : moins d’abréviations que les chartes juridiques, mais une langue moins prévisible et des lacunes importantes (signalées par le copiste « Ci manche »).
 
-*Intérêt pédagogique :* la cursive et ses ligatures illustrent le problème des frontières de lettres. La lettrine soulève la question du traitement des éléments graphiques non standards.
+_Intérêt pédagogique :_ la cursive et ses ligatures illustrent le problème des frontières de lettres. La lettrine ornée soulève la question du traitement des éléments graphiques non standards. Les dessins marginaux posent en outre la question de la segmentation entre texte et image.
 
-**Document C : Registre de comptes (XVe siècle)**
-Quelques folios d'un registre administratif ou comptable, probablement en moyen français avec des chiffres et des montants. Écriture cursive rapide, peu soignée, probablement de plusieurs mains. Mise en page tabulaire ou semi-tabulaire. Présence de chiffres romains et arabes. Notes marginales fréquentes.
+**Document C : Registre de notaire (1430-1436)**  
+Lien : [https://gallica.bnf.fr/ark:/12148/btv1b10088937p/f121.item](https://gallica.bnf.fr/ark:/12148/btv1b10088937p/f121.item)
 
-*Intérêt pédagogique :* la mise en page complexe et le mélange texte/chiffres posent la question de la segmentation de layout. Les notes marginales posent la question de l'ordre de lecture.
+Protocole ou registre des minutes de Joannes Hugueneti de Aquivilla, notaire impérial à Toul (Lorraine). Écriture cursive de type « financière » ou « de procédure », rapide et très liée, typique des actes notariés du XVe siècle. Mise en page dense, souvent une seule colonne, avec des notes marginales (additions, références, noms) et des ajouts interlinéaires. Le scribe signe à la fin de chaque bloc (souscription notariale).
+
+_Intérêt pédagogique :_ l’écriture cursive très liée pose le problème de la segmentation des caractères. Les notes marginales et les souscriptions notariales interrogent l’ordre de lecture et le statut des éléments périphériques. Les formules juridiques répétitives peuvent servir de balises pour l’entraînement d’un modèle HTR.
+
+**Document D : Acte notarié du XVIe siècle**
+Lien : [https://gallica.bnf.fr/ark:/12148/btv1b52516471k/f2.item](https://gallica.bnf.fr/ark:/12148/btv1b52516471k/f2.item)
+
+Marché passé entre Marguerite, duchesse de Rohan, et Julien le Mée, couvreur, pour l’entretien des couvertures du château de Josselin, au prix de 100 livres tournois par an. Acte rédigé en français (et quelques formules latines), copie notariée contemporaine sur papier. Écriture cursive rapide, très liée, typique des actes administratifs du XVIIe siècle. Mise en page simple, une seule colonne. Présence d’une signature, de taches sur le parchemin, d’une déchirure, d’une rature illisible, et d’une lisibilité réduite sur certaines zones.
+
+_Intérêt pédagogique :_ la cursive et ses ligatures illustrent le problème des frontières de lettres. Les dégradations physiques (taches, déchirure, encre qui ronge) posent la question du prétraitement et de la robustesse des modèles. La présence d’une signature et de ratures interroge la transcription diplomatique des éléments non textuels.
+
+
+**Document E : Correspondance du XVIIe siècle
+Lien : [https://gallica.bnf.fr/ark:/12148/btv1b9057311p/f1.item](https://gallica.bnf.fr/ark:/12148/btv1b9057311p/f1.item)
+
+Lettres autographes du poète François de Malherbe adressées au savant Nicolas‑Claude Fabri de Peiresc. Écriture cursive personnelle, rapide et inclinée, typique de la correspondance lettrée du début du XVIIe siècle. Mise en page sobre, une seule colonne, avec formules de politesse, dates, et parfois des ajouts en marge ou en interligne. Présence de ratures et de corrections (le poète se relit).
+
+_Intérêt pédagogique :_ la cursive personnelle, moins standardisée que les écritures administratives, illustre la variabilité inter‑scripteur. Les ratures et corrections posent la question du traitement diplomatique. Les formules épistolaires récurrentes (salutations, remerciements) peuvent servir d’ancrage pour l’apprentissage automatique.
+
+---
+
+**Document F : Manuscrit manuscrit de de nouvelle (XVIIIe siècle, 1762)**  
+Lien : [https://gallica.bnf.fr/ark:/12148/btv1b56000006m/f39.item](https://gallica.bnf.fr/ark:/12148/btv1b56000006m/f39.item)
+
+Manuscrit autographe de Jean-Jacques Rousseau, extrait de _La Nouvelle Héloïse_. Écriture cursive personnelle du XVIIIe siècle, inclinée et régulière, encore très lisible pour un lecteur contemporain. Mise en page simple, une seule colonne. Présence fréquente de ratures et de corrections (mots barrés et réécrits, ajouts interlinéaires), témoignant du travail de révision de l’auteur. Le passage se situe au milieu d’une lettre, sans formule épistolaire typique.
+
+_Intérêt pédagogique :_ l’écriture du XVIIIe siècle annonce les cursives modernes, mais conserve des abréviations et des liaisons propres aux manuscrits anciens. Les ratures et corrections posent la question du traitement diplomatique (transcrire le texte final, l’état brut, ou les deux ?). La bonne lisibilité générale permet d’isoler plus facilement les problèmes de segmentation liés aux repentirs et aux ajouts.
+
 
 ### Les outils autorisés
 Pendant la phase de transcription individuelle, vous disposez de :
