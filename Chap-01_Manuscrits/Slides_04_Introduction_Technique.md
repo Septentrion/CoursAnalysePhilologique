@@ -1,10 +1,10 @@
 ---
-updated: 2026-05-15T01:09:53.232+02:00
-edited_seconds: 1259
+updated: 2026-05-17T17:24:11.612+02:00
+edited_seconds: 1714
 ---
-# Cours 1.4 : Introduction technique : de l'image numérique au problème de vision par ordinateur
+# Introduction technique : de l'image numérique au problème de vision par ordinateur
 
-**Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
+- **Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
 notes:  
 Cette section opère le basculement du côté machine. Elle est condensée : 30 minutes en cours. Elle pose les fondements conceptuels pour les sessions suivantes. À l'issue, les étudiants doivent savoir : qu'est-ce qu'une image numérique, pourquoi l'OCR classique échoue, quelles sont les grandes étapes du pipeline.
 
@@ -20,7 +20,7 @@ Cette section opère le basculement du côté machine. Elle est condensée : 30 
 
 ### 1.1 Le pixel comme unité élémentaire
 - Une image numérique = tableau rectangulaire de nombres entiers (NumPy Arrays)
-![[Cours_1_4_Introduction_Technique-1778788655287.png]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778788655287.png]]
 ```python
 import cv2
 image = cv2.imread("photo.jpeg")
@@ -35,51 +35,82 @@ notes:
 	- **Channels**: number of colour components per pixel
 La valeur numérique stockée dans chaque case représente l'intensité lumineuse à cet emplacement.
 
----
+--
 ![[OpenCV with Python — Comprehensive Technical Notes-1767613846470.png]]
 - Chaque case correspond à une position dans la matrice numérique -> le pixel
 - Chaque pixel est une combinaison de plusieurs valeurs.
 
 --
-![[OpenCV with Python — Comprehensive Technical Notes-1767613119318.png]]
+<!-- slide template="[[plt-two-col]]" -->
+::: title
+### 1.1.b La valeur des pixels
+Chaque pixel = 8 bits (1 byte)
+:::
+::: left 
+![[OpenCV with Python — Comprehensive Technical Notes-1767613119318.png|300]]
 
-- Pour la plupart des images les pixels seront entre ==0 et 255== - en couleur ou nuances de gris
+- Pour les **images en couleur** ou nuances de gris es pixels seront entre ==0 et 255==
 	- 0 → intensité minimum 
 	- 255 → intensité maximum
-- Chaque pixel = 8 bits (1 byte)
 
+:::
+::: right
 ![[OpenCV with Python — Comprehensive Technical Notes-1767613722171.png]]
 
-- Pour une image binaire un pixel peut être entre (0 et 1) ou (0 et 255).
-	- 0 -> Noit
+- Pour une **image binaire** un pixel peut être entre (==0 et 1==) ou (==0 et 255==).
+	- 0 -> Noir
 	- 1 ou 255 -> Blanc
-
+:::
 notes:
 Pour une image en **niveaux de gris**, chaque pixel est un entier compris entre 0 et 255 (sur 8 bits) :
 - **0** correspond au noir absolu (aucune lumière).
 - **255** correspond au blanc absolu (intensité maximale).
 - Toutes les valeurs intermédiaires correspondent à des nuances de gris.
 
+
+pure **red**:   “255, 0, 0.” = 
+Pure **green** is 0, 255, 0
+pure **blue** is 0, 0, 255
+
+any other combination can be made by mixing the three.
+-> “255, 100, 150” for a particular shade of pink.
+
+
+255 en binaire fait: 11111111 - 8 bit the absolute highest
+8 bit -> représente 256 variation d'une couleur.
+En vrai on dit 8 bit mais c'est plus 8 bit par canal 
+-> 16,777,216 nuances en tout
+
+
+-> nuances de gris en 8 bit peut faire jusqu'à 256 dégradé de blanc à noir.
+
+8 bits = 24 bits C'est la même chose ! 
+
 --
+<!-- slide template="[[tpl-two-col-bottom]]" -->
+::: title
 ### 1.2 Images couleur et espaces colorimétriques
-- **Espace RGB et BGR**: Chaque pixel est un triplet 
-	- BGR: Blue, Green, Red (used by openCV)
-	- RGB: Red, Green, Blue (used by matplotlib, PIL)
+:::
 
-![[Cours_1_4_Introduction_Technique-1778793899489.png]]
+::: left
+- **Espace RGB**: Chaque pixel est un triplet - Red, Green, Blue, (Attention openCV utilise BGR par défaut)
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778793899489.png|350]]
+:::
+
+::: right
+
 **Espace HSV** (Hue, Saturation, Value) 
-- très pratique pour isoler des couleurs précises :
+- très pratique pour isoler des couleurs précises, moins facile à visualiser.
 
-
-![[Cours_1_4_Introduction_Technique-1778789903692.png]]
-
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778789903692.png|300]]
+:::
 **Pour les manuscrits** :
-- Canal rouge : bon pour l'encre (absorbe le rouge)
-- Canal bleu : capture mieux taches et dégradations
+- Canal **rouge** : bon pour l'encre (absorbe le rouge)
+- Canal **bleu** : capture mieux taches et dégradations
 
 
 notes:  
-Montrer rapidement l'intérêt de HSV pour détecter l'encre rouge des rubriques. Exercice possible en TP.
+Montrer rapidement l'intérêt de HSV pour détecter l'encre rouge des rubriques. 
 
 Un scan de manuscrit peut être capturé en couleur, même si le document lui-même est noir sur parchemin. La couleur apporte des informations supplémentaires : elle distingue l'encre noire, l'encre rouge des rubriques, le fond jaunâtre du parchemin vieilli, et parfois des traces d'encre effacée invisible en niveaux de gris.
 
@@ -101,11 +132,10 @@ Il est utile pour isoler les rubriques rouges d'un manuscrit, car la teinte roug
 
 --
 ### 1.4 L'histogramme : lire l'image en un coup d'œil
-![[Cours_1_4_Introduction_Technique-1778795320454.png]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778795320454.png]]
 - **Histogramme** : pour chaque intensité (0–255), nombre de pixels ayant cette valeur
 	- Un **pic à droite** (valeurs élevées, proches de 255) : les pixels clairs du fond : le parchemin ou le papier.
 	- Un **pic à gauche** (valeurs basses, proches de 0) : les pixels sombres de l'encre.
-
 
 notes:
 - Outil de diagnostic rapide pour classifier le scan avant de le traiter
@@ -116,17 +146,17 @@ L'**histogramme** d'une image en niveaux de gris est un graphique qui représent
 - Un histogramme qui ne montre pas deux pics distincts indique un faible contraste, peut-être dû à une numérisation de mauvaise qualité, à un parchemin très uniformément coloré, ou à une encre fortement dégradée. Dans ces cas, la binarisation sera difficile et le CER de l'HTR s'en ressentira.
 
 --
-#### **Histogramme espace colorimétrique - Manuscrit Voltaire 0**
-![[Cours_1_4_Introduction_Technique-1778795247924.png|5500]]
+#### Histogramme espace colorimétrique - Manuscrit Voltaire 0
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778795247924.png|500]]
 --
 ### 1.5 La binarisation : de l'image en niveaux de gris à l'image binaire
-La **binarisation** consiste à transformer une image en niveaux de gris (une seule dimension) en une image binaire : 
-- chaque pixel devient soit noir (0) soit blanc (1) selon une ==valeur limite==
+- La **binarisation** consiste à transformer une image en niveaux de gris (une seule dimension) en une image binaire : 
+	- chaque pixel devient soit noir (0) soit blanc (1) selon une ==valeur limite==
 ```python
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 seuil, binaire = cv2.threshold(gray, thresh=80, maxval=255, type=cv2.THRESH_BINARY )
 ```
-![[Cours_1_4_Introduction_Technique-1778797340950.png]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778797340950.png|460]]
 
 notes:
 La binarisation est critique. Sur les manuscrits, Sauvola est presque toujours supérieur à Otsu. 
@@ -139,10 +169,9 @@ Optimal si deux pics distincts -calcule le seuil **maximisant la variance inter-
 image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
 seuil_otsu, binaire_otsu = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 ```
-![[Cours_1_4_Introduction_Technique-1778797349068.png|650]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778797349068.png|650]]
 
 notes:
-
 **Le seuillage global (Otsu)**
 La méthode d'Otsu cherche automatiquement le seuil qui minimise la variance intra-classe : c'est-à-dire le seuil qui sépare au mieux les deux populations de pixels 0 à k et k 255.
 -> Efficace quand l'histogramme présente deux pics bien distincts.
@@ -159,7 +188,7 @@ seuil_sovola = threshold_sauvola(img, window_size=25, k=0.2)
 binare = (seuil_sauvola > image).astype(np.unit8) * 255
 ```
 
-![[Cours_1_4_Introduction_Technique-1778797361584.png|600]]
+![[Cours/Computer Vision/Michel/CoursAnalysePhilologique/metadata/Cours_1_4_Introduction_Technique-1778797361584.png|600]]
 
 notes:
 
@@ -198,7 +227,7 @@ Sauvola est plus lent qu'Otsu (calcul local vs global) mais produit des résulta
 4. **Mise en page complexe** – colonnes, rubriques, lettrines, notes marginales.
 5. **Alphabet ouvert** – signes d'abréviation, s long, ligatures (æ, œ), signe tironien (⁊).
 
-> L'OCR classique atteint <1% CER sur imprimé. Sur manuscrit médiéval, >80% CER.
+> [!tldr] L'OCR classique atteint <1% CER sur imprimé. Sur manuscrit médiéval, >80% CER.
 
 notes:
 **Hypothèse 1 : La police est connue**: L'OCR classique est entraîné sur des polices de caractères connues (Times, Arial, Garamond…). Chaque caractère a une forme fixe, reproductible à l'identique à chaque occurrence.
@@ -237,15 +266,14 @@ L'OCR classique classe chaque caractère dans un alphabet fini. Pour le latin mo
 - Contexte local (40–80 caractères) pour lever ambiguïtés
 - Adapté aux architectures modernes (RNN, Transformer)
 
-> Le changement de paradigme (années 2010–2020) explique la supériorité de TrOCR, Kraken sur les manuscrits.
-
 ---
 ## 3. Le pipeline que nous allons construire
 
+--
 ### 3.1 Vue d'ensemble
+![[Pipeline HTR.png|750]]
 
-Le pipeline complet que nous construirons au fil de ce cours peut être représenté comme une séquence d'étapes de transformation, chacune prenant en entrée la sortie de l'étape précédente.
-
+notes:
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    ENTRÉE                               │
@@ -316,7 +344,6 @@ Le pipeline complet que nous construirons au fil de ce cours peut être représe
 └─────────────────────────────────────────────────────────┘
 ```
 
-notes:
 Chaque étape conditionne la suivante, et une erreur à une étape précoce se propage et s'amplifie dans toutes les étapes suivantes. C'est pourquoi le prétraitement : l'étape la plus « basse » techniquement : mérite autant d'attention que les modèles sophistiqués qui viennent après.
 
 Un exemple concret : si la binarisation laisse du bruit (des pixels parasites qui ressemblent à de l'encre), la segmentation de lignes détectera de fausses lignes. Chaque fausse ligne produit une image de ligne qui ne contient pas de texte réel. Le modèle HTR recevra ces images et produira des transcriptions de charabia. Ces transcriptions de charabia seront incluses dans le dataset livré au module NLP. Le module NLP essaiera de les corriger : et échouera.
@@ -340,10 +367,23 @@ La propagation des erreurs dans un pipeline est l'un des défis fondamentaux des
 ---
 ## 4. Panorama des outils
 
+notes:
 Cette section présente brièvement chaque outil que nous utiliserons, avec son rôle dans le pipeline et ses caractéristiques essentielles. Chacun sera étudié en détail dans les jours suivants.
 
+--
 ### 4.1 OpenCV
+- Bibliothèque de référence pour le traitement d'images
+- Tutoriels: https://opencv24-python-tutorials.readthedocs.io/en/latest/py_tutorials/py_tutorials.html
+- Prétraitement : correction d'orientation, normalisation, opérations morphologiques
 
+```python
+import cv2
+img = cv2.imread("scan.tif")
+gris = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+denoise = cv2.medianBlur(gris, 3)
+```
+
+notes:
 **OpenCV** (*Open Source Computer Vision Library*) est la bibliothèque de référence pour le traitement d'images en Python (et C++). Développée depuis 1999, elle contient des milliers de fonctions couvrant le prétraitement, la détection de contours, la transformation géométrique, le flot optique, et bien plus.
 
 Dans notre pipeline, OpenCV est utilisé principalement pour le prétraitement : correction d'orientation, normalisation du contraste, opérations morphologiques (dilatation, érosion : utiles pour nettoyer la binarisation).
@@ -357,12 +397,10 @@ gris = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 denoised = cv2.medianBlur(gris, ksize=3)  # Filtre médian, noyau 3×3
 ```
 
+--
 ### 4.2 Pillow (PIL)
-
-**Pillow** est la bibliothèque Python standard pour la manipulation d'images : ouvrir et sauvegarder des fichiers dans tous les formats courants (TIFF, JPEG, PNG, WebP…), effectuer des transformations simples (recadrage, redimensionnement, rotation), convertir entre modes colorimétriques.
-
-Pillow et OpenCV sont complémentaires : Pillow excelle pour la gestion des fichiers et les opérations de haut niveau ; OpenCV pour le traitement numérique intensif. Le passage de l'un à l'autre se fait facilement via NumPy.
-
+- Manipulation simple et formats d'image
+- Tutoriel: https://pillow.readthedocs.io/en/stable/handbook/tutorial.html
 ```python
 from PIL import Image
 import numpy as np
@@ -376,8 +414,17 @@ img_retour = Image.fromarray(img_np)
 img_retour.save("scan_traite.png")
 ```
 
-### 4.3 scikit-image
+notes:
+**Pillow** est la bibliothèque Python standard pour la manipulation d'images : ouvrir et sauvegarder des fichiers dans tous les formats courants (TIFF, JPEG, PNG, WebP…), effectuer des transformations simples (recadrage, redimensionnement, rotation), convertir entre modes colorimétriques.
 
+Pillow et OpenCV sont complémentaires : Pillow excelle pour la gestion des fichiers et les opérations de haut niveau ; OpenCV pour le traitement numérique intensif. Le passage de l'un à l'autre se fait facilement via NumPy.
+
+--
+### 4.3 scikit-image
+- Algorithmes académiques (Sauvola, transformée de Hough, métriques)
+- Tutoriel: https://scikit-image.org/docs/dev/user_guide/tutorial_segmentation.html
+
+notes:
 **scikit-image** complète OpenCV avec des algorithmes de traitement d'images plus académiques, notamment le seuillage de Sauvola, les transformées de Hough, et les métriques de qualité d'image. Son API est cohérente avec celle de NumPy et de SciPy.
 
 ```python
@@ -386,8 +433,17 @@ from skimage.transform import rotate
 from skimage.measure import label, regionprops
 ```
 
+---
 ### 4.4 Kraken
+- HTR spécialisé pour documents patrimoniaux
+- Segmentation de lignes + reconnaissance
+- Dépôt: https://github.com/mittagessen/kraken
+```bash
+kraken -i scan.tif segment lines
+kraken -i scan.tif ocr -m modele_medieval.mlmodel
+```
 
+notes:
 **Kraken** est un système HTR open source développé à l'École pratique des hautes études (EPHE) par Benjamin Kiessling. Contrairement aux outils génériques, il est conçu *spécifiquement* pour les documents patrimoniaux : manuscrits, documents d'archives, livres anciens.
 
 Il effectue deux tâches dans notre pipeline :
@@ -407,7 +463,19 @@ kraken -i scan.tif segments.json segment
 kraken -i scan.tif sortie.txt ocr -m modele_medieval.mlmodel
 ```
 
+--
 ### 4.5 TrOCR
+- Transformer-based OCR (Microsoft Research) 
+- Disponible sur Hugging Face - dont modèles fine-tunés pour du Français.
+
+```python
+
+from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
+model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+```
+
+notes:
 
 **TrOCR** (*Transformer-based OCR*) est un modèle développé par Microsoft Research, publié en 2021. Il combine un encodeur de vision de type ViT (pré-entraîné avec BEiT) et un décodeur de langage de type GPT-2 dans une architecture encodeur-décodeur standard.
 
@@ -430,9 +498,17 @@ transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)[
 print(f"Transcription : {transcription}")
 ```
 
-TrOCR pré-entraîné sur des manuscrits modernes (dataset IAM) sera notre point de départ. Nous le fine-tunerons sur des données médiévales en Jour 3.
-
+--
 ### 4.6 SAM : Segment Anything Model
+- Segmentation de layout par prompt (Meta AI, 2023)
+
+```python
+from segment_anything import SamAutomaticMaskGenerator
+mask_generator = SamAutomaticMaskGenerator(sam)
+masks = mask_generator.generate(image_np)
+```
+
+notes:
 
 **SAM** est un modèle de segmentation développé par Meta AI et publié en 2023. Il peut segmenter n'importe quel objet dans une image à partir d'un prompt minimal : un point, une boîte englobante, ou rien du tout (segmentation automatique).
 
@@ -458,8 +534,19 @@ masques = mask_generator.generate(image)
 print(f"Nombre de régions détectées : {len(masques)}")
 ```
 
-### 4.7 DINO et DINOv2
+--
+### 4.7 DINO / DINOv2
+- Représentations auto‑supervisées
+- Le **clustering de pages par style d'écriture** : regr
+- ouper automatiquement les pages selon la main du copiste.
+- L'**aide à la segmentation de lignes** : les features DINOv2 permettent de distinguer visuellement le texte du fond et des illustrations.
 
+```python
+from transformers import AutoImageProcessor, AutoModel
+model = AutoModel.from_pretrained("facebook/dinov2-base")
+```
+
+notes:
 **DINO** (*Self-Distillation with No Labels*) est un modèle d'apprentissage auto-supervisé développé par Facebook AI Research. Il apprend des représentations visuelles riches sans aucune annotation humaine, en faisant s'accorder un réseau « étudiant » sur les représentations d'un réseau « enseignant ».
 
 Sa version améliorée, **DINOv2**, est entraînée sur un dataset curé à grande échelle et produit des features particulièrement généralisables.
@@ -486,8 +573,17 @@ features = outputs.last_hidden_state[:, 0, :]  # CLS token
 print(f"Dimensions du vecteur de features : {features.shape}")  # (1, 768)
 ```
 
+--
 ### 4.8 CLIP
+- Espace commun image‑texte (OpenAI)
+- Description zero‑shot des illustrations
 
+```python
+from transformers import CLIPProcessor, CLIPModel
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+```
+
+notes:
 **CLIP** (*Contrastive Language-Image Pre-Training*) est un modèle développé par OpenAI, entraîné simultanément sur 400 millions de paires (image, texte). Il apprend un espace commun où les représentations d'images et de textes décrivant la même chose sont proches.
 
 Dans notre pipeline, CLIP sert à la **description automatique des illustrations** : les enluminures, les dessins à la plume, les cartes et les diagrammes qui ne sont pas du texte mais qui font partie du document.
@@ -523,69 +619,7 @@ for desc, prob in zip(descriptions, probabilites[0]):
 ```
 
 ---
-
-## 5. Vérification de l'environnement de travail
-Avant les TP des jours suivants, vérifiez que votre environnement contient tous les outils nécessaires. Le script suivant effectue une vérification minimale.
-
-```python
-"""
-verification_environnement.py
-À exécuter une fois pour confirmer que toutes les dépendances sont installées.
-"""
-
-import sys
-
-def verifier_import(nom_module: str, nom_affiche: str = None) -> bool:
-    """Tente d'importer un module et rapporte le résultat."""
-    nom_affiche = nom_affiche or nom_module
-    try:
-        __import__(nom_module)
-        print(f"  [OK] {nom_affiche}")
-        return True
-    except ImportError as e:
-        print(f"  [MANQUANT] {nom_affiche} : {e}")
-        return False
-
-print(f"Python {sys.version}\n")
-print("=== Bibliothèques de traitement d'images ===")
-verifier_import("cv2", "OpenCV (cv2)")
-verifier_import("PIL", "Pillow (PIL)")
-verifier_import("skimage", "scikit-image")
-verifier_import("numpy", "NumPy")
-
-print("\n=== Visualisation ===")
-verifier_import("matplotlib", "Matplotlib")
-verifier_import("seaborn", "Seaborn")
-
-print("\n=== Apprentissage automatique ===")
-verifier_import("torch", "PyTorch")
-verifier_import("transformers", "HuggingFace Transformers")
-verifier_import("datasets", "HuggingFace Datasets")
-
-print("\n=== HTR spécialisé ===")
-verifier_import("kraken", "Kraken")
-
-print("\n=== Segmentation ===")
-verifier_import("segment_anything", "SAM (segment-anything)")
-
-print("\n=== Utilitaires ===")
-verifier_import("langchain", "LangChain")
-verifier_import("umap", "UMAP (umap-learn)")
-```
-
-Si des bibliothèques sont manquantes, installez-les avec :
-
-```bash
-pip install opencv-python pillow scikit-image numpy matplotlib seaborn
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-pip install transformers datasets accelerate
-pip install kraken
-pip install git+https://github.com/facebookresearch/segment-anything.git
-pip install langchain umap-learn
-```
-
----
-## 6. Récapitulatif du Jour 1
+## 5. Récapitulatif du Jour 1
 
 Le Jour 1 a posé trois types de fondements :
 
@@ -604,6 +638,7 @@ Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de
 
 ## Bibliographie de référence
 
+--
 ### Traitement numérique des images
 
 - **Gonzalez, R. C., Woods, R. E.** (2018). *Digital Image Processing* (4e éd.). Pearson. : La référence encyclopédique du domaine. Chapitres 2 (Fundamentals), 3 (Intensity Transformations) et 10 (Image Segmentation) sont directement pertinents pour ce cours.
@@ -616,6 +651,7 @@ Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de
 
 - **Otsu, N.** (1979). *A Threshold Selection Method from Gray-Level Histograms*. IEEE Transactions on Systems, Man, and Cybernetics, 9(1), 62–66. : L'article fondateur du seuillage automatique d'Otsu.
 
+--
 ### OCR et HTR : état de l'art
 
 - **Smith, R.** (2007). *An Overview of the Tesseract OCR Engine*. Ninth International Conference on Document Analysis and Recognition (ICDAR). : Présentation de Tesseract, le moteur OCR open source de référence, et de ses limites sur les documents non standards.
@@ -626,6 +662,7 @@ Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de
 
 - **Kiessling, B.** (2019). *Kraken : an Universal Text Recognizer for the Humanities*. Digital Humanities Conference (DH2019). : Présentation synthétique de Kraken par son auteur, avec les motivations de conception.
 
+--
 ### Modèles fondateurs du pipeline
 
 - **Dosovitskiy, A. et al.** (2020). *An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale*. ICLR 2021. [arXiv:2010.11929] : ViT, la brique de base de TrOCR et de DINO.
@@ -636,6 +673,7 @@ Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de
 
 - **Kirillov, A. et al.** (2023). *Segment Anything*. ICCV 2023. [arXiv:2304.02643] : SAM.
 
+--
 ### Ressources pratiques
 
 - **Documentation HuggingFace Transformers** : [huggingface.co/docs/transformers](https://huggingface.co/docs/transformers). Pour TrOCR, CLIP, DINO et tous les modèles pré-entraînés.
@@ -643,9 +681,3 @@ Les Jours 2 à 5 approfondiront chacun des composants du pipeline, en partant de
 - **Documentation Kraken** : [kraken.re](https://kraken.re). Guide complet d'installation, entraînement et utilisation.
 
 - **Documentation SAM** : [github.com/facebookresearch/segment-anything](https://github.com/facebookresearch/segment-anything). Avec notebooks d'exemples.
-
----
-
-*Support de cours rédigé pour le module Computer Vision · Promotion MD5 · Mai 2026*
-*Ce document accompagne la séance 1.4 du Jour 1. Il conclut le Module 1 et prépare le Jour 2.*
-*Durée estimée de lecture : 45 minutes. Durée en cours magistral : 30 minutes.*

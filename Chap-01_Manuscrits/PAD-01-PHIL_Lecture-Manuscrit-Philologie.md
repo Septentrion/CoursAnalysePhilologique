@@ -1,6 +1,10 @@
+---
+updated: 2026-05-17T13:22:43.115+02:00
+edited_seconds: 0
+---
 # Cours 1.1 : Lecture de manuscrit : approche philologique et paléographique
 
-**Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
+- **Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
 
 ---
 

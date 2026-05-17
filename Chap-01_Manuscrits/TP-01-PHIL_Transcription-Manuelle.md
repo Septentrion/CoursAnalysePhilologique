@@ -1,3 +1,7 @@
+---
+updated: 2026-05-15T17:57:00.109+02:00
+edited_seconds: 19
+---
 # Cours 1.3 — TP : Transcription manuelle et baseline humaine
 
 **Module 1 · Computer Vision appliquée aux manuscrits médiévaux · MD5**
@@ -17,7 +21,7 @@ Ce travail pratique est le premier acte du projet. Il pourrait sembler anachroni
 
 **Troisièmement**, vous mesurerez l'accord entre transcripteurs humains. Cette mesure : le CER inter-annotateurs : est le plafond théorique de ce qu'on peut espérer obtenir d'un modèle. Un modèle qui ferait mieux que la moyenne des humains entraînés serait exceptionnel ; un modèle qui s'en approche est excellent ; un modèle qui reste très en dessous doit être amélioré.
 
-Le TP dure 3 heures. Il est organisé en quatre étapes progressives, qui passent du travail individuel au travail collectif, puis à l'analyse quantitative.
+Il est organisé en quatre étapes progressives, qui passent du travail individuel au travail collectif, puis à l'analyse quantitative.
 
 ---
 ## Matériel fourni
@@ -48,7 +52,7 @@ Pendant la phase de transcription individuelle, vous disposez de :
 - *Aucun outil de traduction, aucun dictionnaire, aucune aide extérieure.* L'objectif est de mesurer ce que vous pouvez déchiffrer par vous-même, pas ce que vous pouvez reconstituer par le sens.
 
 ---
-## Étape A : Transcription individuelle *(45 minutes)*
+## Étape A : Transcription individuelle
 
 ### A.1 Conventions obligatoires
 
@@ -197,10 +201,9 @@ Une ligne entière est effacée, tachée ou manquante.
 → Écrivez `[LIGNE ILLISIBLE]` sur la ligne correspondante.
 
 ---
-## Étape B : Débriefing collectif et conventions TEI *(45 minutes)*
+## Étape B : Débriefing collectif et conventions TEI
 
 ### B.1 Mise en commun des transcriptions
-
 Quelques étudiants présentent brièvement (2 à 3 minutes) :
 1. **Les trois passages les plus difficiles** qu'il a rencontrés, et les choix qu'il a faits.
 2. **Un passage où il est certain** de sa transcription et un passage où il l'est peu.
@@ -330,7 +333,7 @@ La réponse courte est : oui, si on lui apprend à faire *un* choix cohérent : 
 La valeur d'un modèle HTR n'est donc pas d'être « meilleur » qu'un humain au sens absolu : elle est de produire des transcriptions **cohérentes à grande échelle**, ce qu'aucune équipe humaine ne peut faire de façon économiquement viable pour des corpus de plusieurs milliers de pages.
 
 ---
-## Étape C : Analyse quantitative des divergences *(45 minutes)*
+## Étape C : Analyse quantitative des divergences
 
 ### C.1 Objectif
 
@@ -631,8 +634,7 @@ Examinez ensemble les lignes identifiées comme les plus divergentes. Pour chacu
 Cette classification des sources d'erreur est directement utile pour la conception du pipeline : chaque type d'erreur appelle un remède différent.
 
 ---
-
-## Étape D : Problématisation et formalisation du projet *(45 minutes)*
+## Étape D : Problématisation et formalisation du projet
 
 ### D.1 Discussion : à quoi sert la transcription automatique ?
 
@@ -708,33 +710,23 @@ Ces documents ne seront pas notés sur leur qualité philologique : vous n'êtes
 Ils alimenteront directement le calcul du CER inter-annotateurs présenté à l'Étape C, et seront réutilisés comme données de supervision et de validation tout au long du projet.
 
 ---
-
 ## Pour aller plus loin
 
 ### Ressources pratiques pour la lecture de manuscrits médiévaux
 
 **Outils de lecture en ligne**
-
 - **e-Scriptorium** : [escriptorium.fr](https://escriptorium.fr) : plateforme collaborative d'annotation HTR, développée par l'EPHE. Interface similaire à Transkribus mais open source. Vous pourrez y déposer vos transcriptions et les comparer avec les prédictions des modèles.
-
 - **Transkribus** : [transkribus.eu](https://transkribus.eu) : outil commercial avec une version gratuite limitée. Donne accès à des modèles HTR pré-entraînés pour les manuscrits médiévaux. Utile pour obtenir une première transcription automatique à comparer avec les vôtres.
-
 - **Initiale : base de données des manuscrits enluminés** : [initiale.irht.cnrs.fr](http://initiale.irht.cnrs.fr) : pour identifier les types d'enluminures et de lettrines rencontrés dans vos documents.
 
 **Guides de lecture pratiques**
-
 - **École nationale des chartes : Cours de paléographie en ligne** : des exercices de lecture de manuscrits français classés par époque et par difficulté, avec corrections. Non disponibles publiquement pour tous les niveaux, mais accessibles sur demande via l'IRHT.
-
 - **Muzerelle, D.** : *Vocabulaire codicologique* (version électronique) : [codicologia.irht.cnrs.fr](http://codicologia.irht.cnrs.fr). Pour tout terme technique du domaine.
-
 - **Album de paléographie** de l'IRHT : recueil de planches commentées couvrant les principales écritures médiévales françaises du IXe au XVe siècle. Disponible en bibliothèque universitaire spécialisée.
 
 ---
-
 ## Bibliographie de référence
-
 ### Méthodes d'annotation et crowdsourcing pour les humanités
-
 - **Causer, T., Wallace, V.** (2012). *Building A Volunteer's Sense of the Project and Commitment to a Task: Testing Commitment and Task Complexity*. Literary and Linguistic Computing, 27(2), 153–167. : Sur les facteurs qui déterminent la qualité des transcriptions crowdsourcées. Première étude empirique large sur Transcribe Bentham.
 
 - **Lejeune, G. et al.** (2015). *Automatic Transcription of Handwritten Medieval Documents: first experiments on the DAHN Project*. Document Analysis Systems (DAS). : Comparaison des transcriptions humaines et automatiques sur des manuscrits français médiévaux ; données chiffrées sur le CER inter-annotateurs.
@@ -744,13 +736,11 @@ Ils alimenteront directement le calcul du CER inter-annotateurs présenté à l'
 - **Sabou, M. et al.** (2014). *Corpus Annotation through Crowdsourcing: Towards Best Practice Guidelines*. LREC 2014. : Meilleures pratiques pour la collecte d'annotations multiples et le calcul de consensus dans des projets de crowdsourcing.
 
 ### Accords inter-annotateurs
-
 - **Artstein, R., Poesio, M.** (2008). *Inter-Coder Agreement for Computational Linguistics*. Computational Linguistics, 34(4), 555–596. : Revue complète et rigoureuse des mesures d'accord inter-annotateurs. Section 3 sur les mesures basées sur la distance d'édition, directement applicable au CER.
 
 - **Krippendorff, K.** (2004). *Content Analysis: An Introduction to Its Methodology* (2e éd.). Sage Publications. Chapitre 11 : *Reliability*. : L'alpha de Krippendorff est une mesure d'accord généralisée qui étend le kappa de Cohen à plus de deux annotateurs et à des échelles ordinales ou continues. Utilisable pour mesurer l'accord sur des transcriptions.
 
 ### Distance d'édition et algorithmes d'alignement
-
 - **Levenshtein, V. I.** (1966). *Binary codes capable of correcting deletions, insertions, and reversals*. Soviet Physics Doklady, 10(8), 707–710. : L'article fondateur.
 
 - **Needleman, S. B., Wunsch, C. D.** (1970). *A general method applicable to the search for similarities in the amino acid sequence of two proteins*. Journal of Molecular Biology, 48(3), 443–453. : L'algorithme d'alignement global utilisé pour comparer deux séquences. Bien que développé pour la bioinformatique, il est directement applicable à l'alignement de transcriptions.
@@ -758,7 +748,6 @@ Ils alimenteront directement le calcul du CER inter-annotateurs présenté à l'
 - **Wagner, R. A., Fischer, M. J.** (1974). *The String-to-String Correction Problem*. Journal of the ACM, 21(1), 168–173. : Généralisation de la distance de Levenshtein avec des coûts variables selon les opérations. Utile si l'on veut pondérer différemment les substitutions de lettres visuellement proches.
 
 ### Projets de référence en transcription collaborative
-
 - **Causer, T., Terras, M.** (2014). *"Many Hands Make Light Work. Many Hands Together Make Merry Work": Transcribe Bentham and Crowdsourcing Manuscript Collections*. Dans : Ridge, M. (dir.), *Crowdsourcing Our Cultural Heritage*. Ashgate, 57–88. : Bilan du projet Transcribe Bentham, un des projets fondateurs de la transcription collaborative en humanités numériques.
 
 - **Organisciak, P. et al.** (2016). *Researching Large-scale Community Transcription of Manuscript Material*. Dans : Proceedings of the Joint Conference on Digital Libraries. : Analyse quantitative de la qualité des transcriptions dans des projets Zooniverse de grande échelle, avec des données comparatives sur le CER.
