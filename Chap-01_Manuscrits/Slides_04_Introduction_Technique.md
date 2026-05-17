@@ -1,6 +1,6 @@
 ---
-updated: 2026-05-17T17:24:11.612+02:00
-edited_seconds: 1714
+updated: 2026-05-17T18:24:39.770+02:00
+edited_seconds: 1970
 ---
 # Introduction technique : de l'image numérique au problème de vision par ordinateur
 
