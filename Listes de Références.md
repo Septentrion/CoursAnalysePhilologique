@@ -4,12 +4,12 @@ Voici une liste de références faites pendant le cours. Je complèterai la list
 N'hésitez pas à demander des liens que l'on aurait pû oublier ! 
 
 ### Embeddings
-[Représentation Visuelle des embeddings de mots](https://helboukkouri.github.io/embedding-visualization/#/?_k=twfewe)
+- [Représentation Visuelle des embeddings de mots](https://helboukkouri.github.io/embedding-visualization/#/?_k=twfewe)
 
 ### Transformers
-[TRANSFORMER EXPLAINER](https://poloclub.github.io/transformer-explainer/)
-[The Animated Transformer](https://prvnsmpth.github.io/animated-transformer/)
-[The illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- [TRANSFORMER EXPLAINER](https://poloclub.github.io/transformer-explainer/)
+- [The Animated Transformer](https://prvnsmpth.github.io/animated-transformer/)
+- [The illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
 
 
 ### Cours & Conférences
