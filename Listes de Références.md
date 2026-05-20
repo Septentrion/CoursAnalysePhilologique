@@ -15,3 +15,14 @@ N'hésitez pas à demander des liens que l'on aurait pû oublier !
 ### Cours & Conférences
 - [Collège de France](https://www.college-de-france.fr/fr/editions/conferences)
 - [Standord](https://cs231n.stanford.edu/2025/)
+
+### Pré-traitement d'image
+
+#### Deskewing - Redressement d'image
+- [Deskewing scanned documents using horizontal projections(https://muthu.co/deskewing-scanned-documents-using-horizontal-projections/?source=post_page-----e17827894c34---------------------------------------)
+]
+- [Machine Vision Recipes: Deskewing document images](https://medium.com/@9sphere/machine-vision-recipes-deskewing-document-images-e17827894c34)
+
+
+- [📐 Homography Transformations in Practice
+](https://medium.com/wanabilini/homography-transformations-in-practice-974c9e2730b2)
