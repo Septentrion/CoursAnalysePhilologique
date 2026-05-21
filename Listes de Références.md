@@ -38,4 +38,25 @@ N'hésitez pas à demander des liens que l'on aurait pû oublier !
 - [From Codicology to Code: A Comparative Study of Transformer and YOLO-based Detectors for Layout Analysis in Historical Documents](https://arxiv.org/html/2506.20326v1)
 
 
+### Corpora
 
+- [Règles générales de transcription pour les corpus CREMMA](https://gist.github.com/alix-tz/6f89444521bf1cab0522da520f7e4ff4#r%C3%A8gles-g%C3%A9n%C3%A9rales-de-transcription-pour-les-corpus-cremma)
+- [Corpus CATMuS: Consistent Approach to Transcribing ManuScripts community](https://huggingface.co/CATMuS)
+- [Medieval French](https://htromance-project.github.io/medieval-french/)
+- [CREMMALAB](https://cremmalab.hypotheses.org/modeles-htr)
+- [HTR-United](https://htr-united.github.io/catalog.html)
+- [Gallicorpora](https://github.com/Gallicorpora)
+
+### Modèles
+- [Modèles TrOCR Medieval HTR](https://huggingface.co/collections/medieval-data/trocr-medieval-htr)
+- [Modèle HTR TrOCR Medieval Cursive](https://huggingface.co/medieval-data/trocr-medieval-cursiva)
+
+
+### Kraken
+- [Introduction à l'API python](https://kraken.re/main/user_guide/api.html)
+- [Modèles OCR/HTR plateforme Zenodo](https://zenodo.org/communities/ocr_models/records?q=&l=list&p=1&s=10&sort=newest)
+- [Tutoriel Train your own OCR/HTR model with Kraken](https://digitalorientalist.com/2023/09/26/train-your-own-ocr-htr-models-with-kraken-part-1/)
+- [Recongition Model Training](https://kraken.re/main/user_guide/training_recognition.html)
+- [Dépot Github Kraken](https://github.com/mittagessen/kraken/tree/main)
+- [Gérer ses modèles](https://kraken.re/main/user_guide/models.html)
+-[Modèles segmentation & HTR Gallicorpora](https://github.com/Gallicorpora/Segmentation-and-HTR-Models)
